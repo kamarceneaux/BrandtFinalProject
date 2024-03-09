@@ -14,9 +14,16 @@ import java.awt.event.ActionListener;
  * items and then see a receipt and pricing of the order.
  */
 public class App {
-    BasicFrame bf = new BasicFrame("Smooth Smoothie Spot -- Kiosk");
+    BasicFrame bf = new BasicFrame("Smooth Smoothie Spot -- Kiosk"){
+        @Override
+        public void show() {
+            super.show();
+            bf.jf.setSize(800, 600);
+        }
+    };
 
     static String[][] layoutForMenu = {
+            {"instructions", "instructions", "instructions"},
             {"item1", "item2", "receipt_text"},
             {"item3", "item4", "receipt"},
             {"item5", "item6", "receipt"},
@@ -34,16 +41,26 @@ public class App {
         content.setLayout(cards);
 
         // Make Different Page Screens
-        BasicContainer startPage = new StartPage();
+        StartPage startPage = new StartPage();
         content.add(startPage, "StartPage");
 
-        BasicContainer bc1 = new BasicContainer();
-        content.add(bc1,"MainPage");
+        BasicContainer menuGame = new BasicContainer();
+        content.add(menuGame,"menuGame");
 
         final BasicContainer bc2 = new BasicContainer();
         content.add(bc2,"Game");
 
-        bc1.setStringLayout(layoutForMenu);
+        // The button for the startpage that guides the user to the next action.
+        startPage.getStartButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cards.show(content, "menuGame");
+                menuGame.requestFocus();
+            }
+        });
+
+
+        menuGame.setStringLayout(layoutForMenu);
 
         JButton button1 = new JButton("Berry Blastoff Smoothie");
         JButton button2 = new JButton("Peanut Butter Jelly Time");
@@ -54,15 +71,15 @@ public class App {
         receiptTitle.setFont(bigFont);
         receiptTitle.setVerticalAlignment(SwingConstants.TOP);
 
-        bc1.add("item1", button1);
-        bc1.add("item2", button2);
-        bc1.add("item3", button3);
-        bc1.add("item4", new JButton("4"));
-        bc1.add("item5", new JButton("5"));
-        bc1.add("item6", new JButton("Button6"));
-        bc1.add("item7", new JButton("Button7"));
-        bc1.add("item8", new JButton("Button8"));
-        bc1.add("receipt_text", receiptTitle);
+        menuGame.add("item1", button1);
+        menuGame.add("item2", button2);
+        menuGame.add("item3", button3);
+        menuGame.add("item4", new JButton("4"));
+        menuGame.add("item5", new JButton("5"));
+        menuGame.add("item6", new JButton("Button6"));
+        menuGame.add("item7", new JButton("Button7"));
+        menuGame.add("item8", new JButton("Button8"));
+        menuGame.add("receipt_text", receiptTitle);
 
         button1.addActionListener(new ActionListener() {
             @Override
