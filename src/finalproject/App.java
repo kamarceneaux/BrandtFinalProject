@@ -2,12 +2,17 @@ package finalproject;
 
 import basicgraphics.BasicContainer;
 import basicgraphics.BasicFrame;
+import finalproject.utils.core.Smoothie;
+import finalproject.utils.core.SmoothieManager;
 import finalproject.utils.screens.MenuScreen;
+import finalproject.utils.screens.SmoothieCustomizationPage;
 import finalproject.utils.screens.StartPage;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 
 /**
  * Goal of this app is to be a menu ordering application for a smoothie place. Users can place their order from various of
@@ -24,6 +29,8 @@ public class App {
         }
     };
 
+    private final SmoothieManager smoothieManager = new SmoothieManager();
+
     public void run(){
 //        bf.jf.setResizable(false);
         final Container content = bf.getContentPane();
@@ -37,11 +44,33 @@ public class App {
         MenuScreen menuGame = new MenuScreen();
         content.add(menuGame,"menuGame");
 
-        final BasicContainer bc2 = new BasicContainer();
-        content.add(bc2,"Game");
+        SmoothieCustomizationPage customizationPage = new SmoothieCustomizationPage();
+        content.add(customizationPage,"customizationPage");
 
         // The button for the startpage that guides the user to the next action.
         startPage.getStartButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cards.show(content, "menuGame");
+                menuGame.requestFocus();
+            }
+        });
+
+        // Responsible for generating the Customization Page for Smoothies
+        for (JButton button: menuGame.getButtonsForSmoothies()){
+            button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    Smoothie currentSmoothie = smoothieManager.generateSmoothie(button);
+                    System.out.println(currentSmoothie);
+                    cards.show(content, "customizationPage");
+                    customizationPage.requestFocus();
+                }
+            });
+        }
+
+        // Responsible for going back to previous page
+        customizationPage.getBackButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 cards.show(content, "menuGame");

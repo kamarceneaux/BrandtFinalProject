@@ -24,7 +24,16 @@ public class Smoothie extends Item{
     }
 
     public void addIngredient(Ingredient ingredient){
-        ingredients.add(ingredient);
+        boolean canAdd = true;
+        for (int i = 0; i < ingredients.size(); i++) {
+            Ingredient ingreidentToCompare = ingredients.get(i);
+            if(ingredient.getName().equals(ingreidentToCompare.getName())){
+                canAdd = false;
+            }
+        }
+        if(canAdd){
+            ingredients.add(ingredient);
+        }
     }
 
     public void addIngredients(List<Ingredient> ingredientsToBeAdded){
@@ -46,4 +55,19 @@ public class Smoothie extends Item{
         }
     }
 
+    public List<Ingredient> getIngredients() {
+        return ingredients;
+    }
+
+    @Override
+    public String toString() {
+        String string = super.toString();
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append(string);
+        stringBuilder.append(" - Ingredients are: ");
+        stringBuilder.append(ingredients);
+
+        return stringBuilder.toString();
+    }
 }

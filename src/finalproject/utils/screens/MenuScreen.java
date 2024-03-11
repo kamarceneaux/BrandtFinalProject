@@ -13,6 +13,9 @@ import java.util.List;
 
 public class MenuScreen extends BasicContainer {
 
+    private final CardLayout cards = new CardLayout();
+    SmoothieCustomizationPage customizationPage = new SmoothieCustomizationPage();
+
     private static String[][] layoutForMenu = {
             {"instructions", "instructions", "instructions"},
             {"item1", "item2", "receipt_text"},
@@ -80,15 +83,9 @@ public class MenuScreen extends BasicContainer {
             eachButton.setPreferredSize(new Dimension(200, 65));
         }
 
-        for (JButton button: buttonsForSmoothies){
-            button.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    Smoothie currentSmoothie = smoothieManager.generateSmoothie(button);
+    }
 
-                }
-            });
-        }
-
+    public List<JButton> getButtonsForSmoothies() {
+        return buttonsForSmoothies;
     }
 }

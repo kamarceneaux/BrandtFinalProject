@@ -115,27 +115,20 @@ public class SmoothieManager {
         String text = btn.getText();
 
         if(text.contains("Blastoff")){
-            System.out.println("Berry Smoothie");
             return new Smoothie("Berry Blastoff Smoothie", berryIngredients);
         } else if (text.contains("Peanut")) {
-            System.out.println("Peanut Butter Smoothie");
             return new Smoothie("Peanut Butter Smoothie", pbIngredients);
         } else if (text.contains("Power")) {
-            System.out.println("Power Potion");
             return new Smoothie("Popeye's Power Potion", popeyeIngredients);
         } else if (text.contains("Cucumber")) {
-            System.out.println("Cucumber Squeeze");
             return new Smoothie("Cucumber Squeeze", cucumberIngredients);
         } else if (text.contains("Oat")) {
-            System.out.println("Berry Oat-a-pult");
             return new Smoothie("Berry Oat-a-pult", oatIngredients);
         } else if (text.contains("Hulk")) {
             return new Smoothie("Hulk's Secret Garden", hulkIngredients);
         } else if (text.contains("Monkey")) {
-            System.out.println("Monkey Business");
             return new Smoothie("Monkey Business", monkeyIngredients);
         } else if (text.contains("Build")) {
-            System.out.println("Build your own smoothie");
             return new Smoothie("Build your own Smoothie");
         }
         return null;
