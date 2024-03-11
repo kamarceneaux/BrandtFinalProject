@@ -4,15 +4,23 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+
+
 public class Smoothie extends Item{
     private List<Ingredient> ingredients;
+    private List<Ingredient> allIngredients = SmoothieManager.ALL_POSSIBLE_INGREDIENTS;
+
+    public Smoothie(String name){
+        this(6.69, name);
+    }
+
+    public Smoothie(String name, List<Ingredient> ingredients){
+        this(6.69, name);
+        this.ingredients = ingredients;
+    }
 
     public Smoothie(double price, String name) {
         super(price, name, TypeOfItem.SMOOTHIE);
-    }
-
-    public Smoothie(double price, String name, String description) {
-        super(price, name, description, TypeOfItem.SMOOTHIE);
     }
 
     public void addIngredient(Ingredient ingredient){
