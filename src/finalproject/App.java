@@ -12,6 +12,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 
 /**
@@ -32,7 +33,6 @@ public class App {
     private final SmoothieManager smoothieManager = new SmoothieManager();
 
     public void run(){
-//        bf.jf.setResizable(false);
         final Container content = bf.getContentPane();
         final CardLayout cards = new CardLayout();
         content.setLayout(cards);
@@ -62,9 +62,22 @@ public class App {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     Smoothie currentSmoothie = smoothieManager.generateSmoothie(button);
-                    System.out.println(currentSmoothie);
+                    // Passes the smoothie corresponding to each button.
+                    customizationPage.setInformation(currentSmoothie);
+                    customizationPage.setCurrentSmoothieLbl(currentSmoothie.getName());
+                    customizationPage.loadButtonData();
                     cards.show(content, "customizationPage");
                     customizationPage.requestFocus();
+                }
+            });
+        }
+
+        // Modifies a Smoothie Element
+        for(JButton button: customizationPage.getAllCustomizationButtons()){
+            button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    customizationPage.modifySmoothieIngredients(button);
                 }
             });
         }
@@ -73,6 +86,16 @@ public class App {
         customizationPage.getBackButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // Empty/Delete Previous Data
+                customizationPage.setNewSetofIngredients(null);
+
+                // Resets Colors for Buttons
+                List<JButton> btns = customizationPage.getAllCustomizationButtons();
+                for (int i = 0; i < customizationPage.getAllCustomizationButtons().size(); i++) {
+                    JButton btn = customizationPage.getAllCustomizationButtons().get(i);
+                    btn.setForeground(Color.black);
+                }
+
                 cards.show(content, "menuGame");
                 menuGame.requestFocus();
             }

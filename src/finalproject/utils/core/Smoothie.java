@@ -36,11 +36,11 @@ public class Smoothie extends Item{
         }
     }
 
-    public void addIngredients(List<Ingredient> ingredientsToBeAdded){
-        for (int i = 0; i < ingredientsToBeAdded.size(); i++) {
-            addIngredient(ingredientsToBeAdded.get(i));
-        }
-    }
+//    public void addIngredients(List<Ingredient> ingredientsToBeAdded){
+//        for (int i = 0; i < ingredientsToBeAdded.size(); i++) {
+//            addIngredient(ingredientsToBeAdded.get(i));
+//        }
+//    }
 
     public void removeIngredient(String ingredient){
         // Checks for all the ingredients in a menu item.
@@ -54,6 +54,19 @@ public class Smoothie extends Item{
             }
         }
     }
+
+//    public void removeIngredient(String ingredient, List<Ingredient> ingredients){
+//        // Checks for all the ingredients in a menu item.
+//        Set<Ingredient> allPossibleIngredients = new HashSet<>(ingredients);
+//
+//        if(allPossibleIngredients.contains(ingredient)){
+//            for (int i = 0; i < ingredients.size(); i++) {
+//                if(ingredient.equals(ingredients.get(i))){
+//                    ingredients.remove(i);
+//                }
+//            }
+//        }
+//    }
 
     public List<Ingredient> getIngredients() {
         return ingredients;
@@ -69,5 +82,9 @@ public class Smoothie extends Item{
         stringBuilder.append(ingredients);
 
         return stringBuilder.toString();
+    }
+
+    public void setIngredients(List<Ingredient> ingredients) {
+        this.ingredients = ingredients;
     }
 }

@@ -13,9 +13,6 @@ import java.util.List;
 
 public class MenuScreen extends BasicContainer {
 
-    private final CardLayout cards = new CardLayout();
-    SmoothieCustomizationPage customizationPage = new SmoothieCustomizationPage();
-
     private static String[][] layoutForMenu = {
             {"instructions", "instructions", "instructions"},
             {"item1", "item2", "receipt_text"},
