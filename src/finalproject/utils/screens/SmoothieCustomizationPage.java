@@ -132,7 +132,6 @@ public class SmoothieCustomizationPage extends BasicContainer {
      */
     public void modifySmoothieIngredients(JButton btn){
         String text = btn.getText();
-        System.out.println(workingSmoothie);
 
         // If a ingredient is already in the Smoothie
         if(btn.getForeground().equals(Color.RED)){
@@ -142,22 +141,26 @@ public class SmoothieCustomizationPage extends BasicContainer {
                     newSetofIngredients.remove(i);
                 }
             }
-
-            System.out.println(newSetofIngredients);
-            System.out.println("meow");
         }else {
             if(newSetofIngredients == null){
                 newSetofIngredients = new ArrayList<>();
             }
             newSetofIngredients.add(new Ingredient(text));
-            System.out.println(newSetofIngredients);
             btn.setForeground(Color.RED);
-            System.out.println("purr");
         }
 
     }
 
     public void setNewSetofIngredients(List<Ingredient> newSetofIngredients) {
         this.newSetofIngredients = newSetofIngredients;
+    }
+
+    public void processSubmission(){
+        if(newSetofIngredients != null){
+            // Set New Ingredients In the Array
+            workingSmoothie.setIngredients(newSetofIngredients);
+        }else{
+            JOptionPane.showMessageDialog(this, "Can't add a smoothie with no ingredients");
+        }
     }
 }

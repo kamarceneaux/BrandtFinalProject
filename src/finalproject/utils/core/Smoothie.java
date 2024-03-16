@@ -1,5 +1,6 @@
 package finalproject.utils.core;
 
+import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -36,7 +37,24 @@ public class Smoothie extends Item{
         }
     }
 
-//    public void addIngredients(List<Ingredient> ingredientsToBeAdded){
+    @Override
+    public double getPrice() {
+        double price = super.getPrice();
+        if(ingredients != null){
+            if(ingredients.size() > 9){
+                int numOver = ingredients.size() - 9;
+                price += numOver * 0.75;
+            }
+        }
+        return price;
+    }
+
+    private String priceFromatted(){
+        DecimalFormat df = new DecimalFormat("#.##");
+        return df.format(getPrice());
+    }
+
+    //    public void addIngredients(List<Ingredient> ingredientsToBeAdded){
 //        for (int i = 0; i < ingredientsToBeAdded.size(); i++) {
 //            addIngredient(ingredientsToBeAdded.get(i));
 //        }
@@ -55,19 +73,6 @@ public class Smoothie extends Item{
         }
     }
 
-//    public void removeIngredient(String ingredient, List<Ingredient> ingredients){
-//        // Checks for all the ingredients in a menu item.
-//        Set<Ingredient> allPossibleIngredients = new HashSet<>(ingredients);
-//
-//        if(allPossibleIngredients.contains(ingredient)){
-//            for (int i = 0; i < ingredients.size(); i++) {
-//                if(ingredient.equals(ingredients.get(i))){
-//                    ingredients.remove(i);
-//                }
-//            }
-//        }
-//    }
-
     public List<Ingredient> getIngredients() {
         return ingredients;
     }
@@ -78,8 +83,18 @@ public class Smoothie extends Item{
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.append(string);
-        stringBuilder.append(" - Ingredients are: ");
-        stringBuilder.append(ingredients);
+        stringBuilder.append("\nContaining: \n");
+        if(ingredients != null){
+            for (int i = 0; i < ingredients.size(); i++) {
+                String ingredient = ingredients.get(i).getName();
+                if(i > 8){
+                    stringBuilder.append("\t(EXTRA CHARGE) " + ingredient + "\n");
+                }else {
+                    stringBuilder.append("\t " + ingredient + "\n");
+                }
+            }
+        }
+        stringBuilder.append("Total: $" + priceFromatted() + "\n");
 
         return stringBuilder.toString();
     }
