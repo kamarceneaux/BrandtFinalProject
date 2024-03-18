@@ -1,27 +1,24 @@
 package finalproject.utils.screens;
 
 import basicgraphics.BasicContainer;
-import finalproject.utils.core.Smoothie;
-import finalproject.utils.core.SmoothieManager;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MenuScreen extends BasicContainer {
 
     private static String[][] layoutForMenu = {
-            {"instructions", "instructions", "instructions"},
+            {"instructions", "instructions", "submit"},
             {"item1", "item2", "receipt_text"},
-            {"item3", "item4", "receipt"},
+            {"item3", "item4", "viewReceipt"},
             {"item5", "item6", "receipt"},
             {"item7", "item8", "receipt"},
-            {"proteinBars", "cookies", "totalBar"},
+            {"proteinBars", "cookies", "receipt"},
     };
     private List<JButton> buttonsForSmoothies = new ArrayList<>();
+    private final JButton viewReceiptBtn = new JButton("View Receipt");
     private final JButton blastoffSmoothieBTN = new JButton("Berry Blastoff Smoothie");
     private final JButton butterJellyTimeBTN = new JButton("Peanut Butter Jelly Time");
     private final JButton powerPotionBTN = new JButton("Power Potion");
@@ -32,12 +29,15 @@ public class MenuScreen extends BasicContainer {
     private final JButton cyoSmoothieBTN = new JButton("Build a Smoothie!");
     private final JButton proteinBarsBTN = new JButton("View Protein Bars");
     private final JButton cookiesBTN = new JButton("View Cookies");
-    private final SmoothieManager smoothieManager = new SmoothieManager();
+    private JButton submitButton = new JButton("Submit");
+    private JLabel recieptText = new JLabel();
 
     public MenuScreen() {
         super();
         this.setStringLayout(layoutForMenu);
         buttons();
+
+        this.add("viewReceipt", viewReceiptBtn);
     }
     
     private void buttons(){
@@ -80,9 +80,46 @@ public class MenuScreen extends BasicContainer {
             eachButton.setPreferredSize(new Dimension(200, 65));
         }
 
+        submitButton.setPreferredSize(new Dimension(225, 40));
+        this.add("submit", submitButton);
+    }
+
+    public JButton getSubmitButton() {
+        return submitButton;
     }
 
     public List<JButton> getButtonsForSmoothies() {
         return buttonsForSmoothies;
     }
+
+    public JButton getViewReceiptBtn() {
+        return viewReceiptBtn;
+    }
+
+    public JLabel getRecieptText(){
+        return recieptText;
+    }
+
+    public void adjustFontSize() {
+        if (getWidth() > 0 && getHeight() > 0) {
+            String text = recieptText.getText();
+            Font currentFont = getFont();
+            FontMetrics fontMetrics = getFontMetrics(currentFont);
+
+            int width = fontMetrics.stringWidth(text);
+            int height = fontMetrics.getHeight();
+
+            float fontSize = currentFont.getSize();
+            float widthRatio = (float) getWidth() / width;
+            float heightRatio = (float) getHeight() / height;
+
+            float ratio = Math.min(widthRatio, heightRatio);
+
+            int newFontSize = (int) (fontSize * ratio);
+
+            Font fontForReciept = recieptText.getFont().deriveFont(Font.PLAIN, newFontSize);
+            recieptText.setFont(fontForReciept);
+        }
+    }
+
 }

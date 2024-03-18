@@ -1,6 +1,6 @@
 package finalproject.utils.core;
 
-public class Ingredient {
+public class Ingredient implements Comparable<Ingredient>{
     private String name;
 
     public Ingredient(String name) {
@@ -10,6 +10,11 @@ public class Ingredient {
     @Override
     public String toString() {
         return name;
+    }
+
+    @Override
+    public int compareTo(Ingredient o) {
+        return this.name.compareTo(o.getName());
     }
 
     public String getName(){

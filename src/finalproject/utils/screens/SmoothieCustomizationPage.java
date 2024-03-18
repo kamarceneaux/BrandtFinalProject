@@ -15,7 +15,7 @@ public class SmoothieCustomizationPage extends BasicContainer {
     private final JButton submitButton = new JButton("Save Changes!");
     private final JLabel currentSmoothieLbl = new JLabel("");
     private final List<JButton> allCustomizationButtons = new ArrayList<>();
-    private List<Ingredient> newSetofIngredients = new ArrayList<>();
+    private List<Ingredient> newSetofIngredients;
 
 
     private Smoothie workingSmoothie;
@@ -47,9 +47,17 @@ public class SmoothieCustomizationPage extends BasicContainer {
     }
 
     public void setCurrentSmoothieLbl(String smoothieLbl){
+        // Sets the Main Label for a Smoothie
         currentSmoothieLbl.setText(smoothieLbl);
-        List<Ingredient> originalIngredients = workingSmoothie.getIngredients();
-        newSetofIngredients = originalIngredients;
+
+        // The Following Block is Responsible for Data State for Ingredients
+        // Reseting ingredients when transfering between smoothie objects.
+        if(workingSmoothie.getIngredients() == null){
+            workingSmoothie.setIngredients(new ArrayList<>());
+        }
+        workingSmoothie.setModifiedIngredients(workingSmoothie.getIngredients());
+        newSetofIngredients = new ArrayList<>();
+        newSetofIngredients.addAll(workingSmoothie.getIngredients());
     }
 
     public List<JButton> getAllCustomizationButtons() {
@@ -139,6 +147,7 @@ public class SmoothieCustomizationPage extends BasicContainer {
             for (int i = 0; i < newSetofIngredients.size(); i++) {
                 if(text.equals(newSetofIngredients.get(i).getName())){
                     newSetofIngredients.remove(i);
+                    break;
                 }
             }
         }else {
@@ -155,12 +164,20 @@ public class SmoothieCustomizationPage extends BasicContainer {
         this.newSetofIngredients = newSetofIngredients;
     }
 
-    public void processSubmission(){
-        if(newSetofIngredients != null){
+    /**
+     * Determines whether if a submission can be processed
+     *
+     * If it returns true, then the submission can be processed.
+     * If it returns false, then the submission cannot be processed.
+     */
+    public boolean processSubmission(){
+        if(newSetofIngredients != null && newSetofIngredients.size() != 0){
             // Set New Ingredients In the Array
-            workingSmoothie.setIngredients(newSetofIngredients);
+            workingSmoothie.setModifiedIngredients(newSetofIngredients);
+            return true;
         }else{
             JOptionPane.showMessageDialog(this, "Can't add a smoothie with no ingredients");
+            return false;
         }
     }
 }

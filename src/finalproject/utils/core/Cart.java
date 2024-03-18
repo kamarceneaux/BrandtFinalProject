@@ -13,6 +13,7 @@ public class Cart {
         for (int i = 0; i < items.size(); i++) {
             total += items.get(i).getPrice();
         }
+        total = Double.parseDouble(String.format("%.2f", total));
         return total;
     }
 
@@ -29,11 +30,13 @@ public class Cart {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
+        sb.append("<html>");
 
         for (int i = 0; i < items.size(); i++) {
             sb.append(items.get(i).toString());
         }
-//        sb.append("Total is: $" + priceFromatted());
+        sb.append("Total for the cart: $" + priceFromatted());
+        sb.append("</html>");
 
         return sb.toString();
     }

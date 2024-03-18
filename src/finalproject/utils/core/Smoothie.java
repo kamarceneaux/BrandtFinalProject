@@ -1,15 +1,14 @@
 package finalproject.utils.core;
 
 import java.text.DecimalFormat;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import java.util.*;
 
 
 public class Smoothie extends Item{
     private List<Ingredient> ingredients;
-    private List<Ingredient> allIngredients = SmoothieManager.ALL_POSSIBLE_INGREDIENTS;
+    private List<Ingredient> modifiedIngredients;
+    private List<String> textToBeOutputted = new ArrayList<>();
+    private final List<Ingredient> allIngredients = SmoothieManager.ALL_POSSIBLE_INGREDIENTS;
 
     public Smoothie(String name){
         this(6.69, name);
@@ -24,25 +23,12 @@ public class Smoothie extends Item{
         super(price, name, TypeOfItem.SMOOTHIE);
     }
 
-    public void addIngredient(Ingredient ingredient){
-        boolean canAdd = true;
-        for (int i = 0; i < ingredients.size(); i++) {
-            Ingredient ingreidentToCompare = ingredients.get(i);
-            if(ingredient.getName().equals(ingreidentToCompare.getName())){
-                canAdd = false;
-            }
-        }
-        if(canAdd){
-            ingredients.add(ingredient);
-        }
-    }
-
     @Override
     public double getPrice() {
         double price = super.getPrice();
-        if(ingredients != null){
-            if(ingredients.size() > 9){
-                int numOver = ingredients.size() - 9;
+        if(modifiedIngredients != null){
+            if(modifiedIngredients.size() > 9){
+                int numOver = modifiedIngredients.size() - 9;
                 price += numOver * 0.75;
             }
         }
@@ -54,52 +40,105 @@ public class Smoothie extends Item{
         return df.format(getPrice());
     }
 
-    //    public void addIngredients(List<Ingredient> ingredientsToBeAdded){
-//        for (int i = 0; i < ingredientsToBeAdded.size(); i++) {
-//            addIngredient(ingredientsToBeAdded.get(i));
-//        }
-//    }
-
-    public void removeIngredient(String ingredient){
-        // Checks for all the ingredients in a menu item.
-        Set<Ingredient> allPossibleIngredients = new HashSet<>(ingredients);
-
-        if(allPossibleIngredients.contains(ingredient)){
-            for (int i = 0; i < ingredients.size(); i++) {
-                if(ingredient.equals(ingredients.get(i))){
-                    ingredients.remove(i);
-                }
-            }
-        }
-    }
-
     public List<Ingredient> getIngredients() {
         return ingredients;
     }
 
+    public void compareIngredients(){
+        List<Ingredient> copyOfIngredients = new ArrayList<>();
+        copyOfIngredients.addAll(ingredients);
+
+        if(modifiedIngredients == null){
+            setModifiedIngredients(ingredients);
+        }
+
+        List<Ingredient> copyOfModifiedIngredients = new ArrayList<>();
+        copyOfModifiedIngredients.addAll(modifiedIngredients);
+
+        // Sort the Ingredients
+        Collections.sort(copyOfIngredients);
+        Collections.sort(copyOfModifiedIngredients);
+
+        int i = 0, j = 0;
+        while (i < copyOfIngredients.size() && j < copyOfModifiedIngredients.size()) {
+            int comparison = copyOfIngredients.get(i).compareTo(copyOfModifiedIngredients.get(j));
+            if (comparison == 0) {
+                i++;
+                j++;
+            } else if (comparison < 0) {
+//                System.out.println("Removed Item: " + copyOfIngredients.get(i));
+                textToBeOutputted.add(String.format("Removed Item: %s", copyOfIngredients.get(i)));
+                i++;
+            } else {
+//                System.out.println("Added Item: " + copyOfModifiedIngredients.get(j));
+                textToBeOutputted.add(String.format("Added Item: %s", copyOfModifiedIngredients.get(i)));
+                j++;
+            }
+        }
+
+        // Print remaining items
+        while (i < copyOfIngredients.size()) {
+//            System.out.println("Removed Item: " + copyOfIngredients.get(i));
+            textToBeOutputted.add(String.format("Removed Item: %s", copyOfIngredients.get(i)));
+            i++;
+        }
+        while (j < copyOfModifiedIngredients.size()) {
+//            System.out.println("Added Item: " + copyOfModifiedIngredients.get(j));
+            textToBeOutputted.add(String.format("Added Item: %s", copyOfModifiedIngredients.get(i)));
+            j++;
+        }
+
+        Collections.sort(modifiedIngredients);
+        Collections.sort(textToBeOutputted);
+    }
+
     @Override
     public String toString() {
-        String string = super.toString();
         StringBuilder stringBuilder = new StringBuilder();
 
-        stringBuilder.append(string);
-        stringBuilder.append("\nContaining: \n");
-        if(ingredients != null){
-            for (int i = 0; i < ingredients.size(); i++) {
-                String ingredient = ingredients.get(i).getName();
-                if(i > 8){
-                    stringBuilder.append("\t(EXTRA CHARGE) " + ingredient + "\n");
-                }else {
-                    stringBuilder.append("\t " + ingredient + "\n");
+        stringBuilder.append("<div>");
+        stringBuilder.append(getName());
+        stringBuilder.append(textToBeOutputted.size() > 0 ? ": ": " ");
+        if(textToBeOutputted != null && textToBeOutputted.size() != 0){
+            stringBuilder.append("<ul>");
+            for (int i = 0; i < textToBeOutputted.size(); i++) {
+                String ingredient = textToBeOutputted.get(i);
+                if(ingredient.contains("Removed ") || ingredient.contains("Added ")){
+                    stringBuilder.append("<li>");
+                    stringBuilder.append(ingredient);
+                    stringBuilder.append("</li>");
                 }
             }
         }
-        stringBuilder.append("Total: $" + priceFromatted() + "\n");
+
+        boolean extraCharge = false;
+
+        if(modifiedIngredients != null){
+            for (int i = 0; i < modifiedIngredients.size(); i++) {
+                String ingredient = modifiedIngredients.get(i).getName();
+                if(i  > 8){
+                    stringBuilder.append("<li>");
+                    stringBuilder.append("(EXTRA CHARGE) " + ingredient);
+                    stringBuilder.append("</li>");
+                }
+            }
+        }
+        stringBuilder.append(textToBeOutputted.size() > 0 || extraCharge ? "</ul>": " ");
+        stringBuilder.append("<br>Total for Smoothie: $" + priceFromatted() + "</div>");
 
         return stringBuilder.toString();
     }
 
+    public void setModifiedIngredients(List<Ingredient> modifiedIngredients) {
+        this.modifiedIngredients = modifiedIngredients;
+    }
+
+
     public void setIngredients(List<Ingredient> ingredients) {
         this.ingredients = ingredients;
+    }
+
+    public List<Ingredient> getModifiedIngredients() {
+        return modifiedIngredients;
     }
 }

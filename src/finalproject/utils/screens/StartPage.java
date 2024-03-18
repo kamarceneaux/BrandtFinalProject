@@ -42,7 +42,8 @@ public class StartPage extends BasicContainer {
         JLabel moreInstructions = new JLabel(
                 "<html>Do <b>YOU</b> have what it takes to be the quickest at " +
                         "<br> taking orders and ensuring customer accuracy??!" +
-                        "<br><br><br> If you do, smooth smoothie is looking for employees to try!</html>"
+                        "<br><br><br> If you do, smooth smoothie is looking for employees to try!"+
+                        "<br><br><br> <b>Note</b>: Ice is assumed in all smoothies.</html>"
         );
         moreInstructions.setVerticalAlignment(SwingConstants.TOP);
 
