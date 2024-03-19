@@ -88,7 +88,6 @@ public class Smoothie extends Item{
             j++;
         }
 
-        Collections.sort(modifiedIngredients);
         Collections.sort(textToBeOutputted);
     }
 
@@ -97,7 +96,7 @@ public class Smoothie extends Item{
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.append("<div>");
-        stringBuilder.append(getName());
+        stringBuilder.append("<em>" + getName() + "</em>");
         stringBuilder.append(textToBeOutputted.size() > 0 ? ": ": " ");
         if(textToBeOutputted != null && textToBeOutputted.size() != 0){
             stringBuilder.append("<ul>");
@@ -124,7 +123,7 @@ public class Smoothie extends Item{
             }
         }
         stringBuilder.append(textToBeOutputted.size() > 0 || extraCharge ? "</ul>": " ");
-        stringBuilder.append("<br>Total for Smoothie: $" + priceFromatted() + "</div>");
+        stringBuilder.append("<br>Total for Smoothie: $" + priceFromatted() + "</div><br>");
 
         return stringBuilder.toString();
     }

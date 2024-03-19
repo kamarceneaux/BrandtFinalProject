@@ -35,6 +35,7 @@ public class Cart {
         for (int i = 0; i < items.size(); i++) {
             sb.append(items.get(i).toString());
         }
+        sb.append("-------------------------------------<br>");
         sb.append("Total for the cart: $" + priceFromatted());
         sb.append("</html>");
 

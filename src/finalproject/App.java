@@ -123,7 +123,7 @@ public class App {
             }
         });
 
-        //Functionality for Submitting
+        //Functionality for Submitting the customization of a smoothie
         customizationPage.getSubmitButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -145,6 +145,7 @@ public class App {
                 }
 
                 //TODO: Add functionality for the reciept text to be shown.
+                viewReceipt.setTextForLabel(cart.toString());
 
                 // Return back to menu screen
                 cards.show(content, "menuGame");

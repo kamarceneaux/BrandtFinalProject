@@ -30,7 +30,6 @@ public class MenuScreen extends BasicContainer {
     private final JButton proteinBarsBTN = new JButton("View Protein Bars");
     private final JButton cookiesBTN = new JButton("View Cookies");
     private JButton submitButton = new JButton("Submit");
-    private JLabel recieptText = new JLabel();
 
     public MenuScreen() {
         super();
@@ -94,32 +93,6 @@ public class MenuScreen extends BasicContainer {
 
     public JButton getViewReceiptBtn() {
         return viewReceiptBtn;
-    }
-
-    public JLabel getRecieptText(){
-        return recieptText;
-    }
-
-    public void adjustFontSize() {
-        if (getWidth() > 0 && getHeight() > 0) {
-            String text = recieptText.getText();
-            Font currentFont = getFont();
-            FontMetrics fontMetrics = getFontMetrics(currentFont);
-
-            int width = fontMetrics.stringWidth(text);
-            int height = fontMetrics.getHeight();
-
-            float fontSize = currentFont.getSize();
-            float widthRatio = (float) getWidth() / width;
-            float heightRatio = (float) getHeight() / height;
-
-            float ratio = Math.min(widthRatio, heightRatio);
-
-            int newFontSize = (int) (fontSize * ratio);
-
-            Font fontForReciept = recieptText.getFont().deriveFont(Font.PLAIN, newFontSize);
-            recieptText.setFont(fontForReciept);
-        }
     }
 
 }
