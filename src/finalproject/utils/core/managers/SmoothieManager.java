@@ -1,4 +1,7 @@
-package finalproject.utils.core;
+package finalproject.utils.core.managers;
+
+import finalproject.utils.core.Ingredient;
+import finalproject.utils.core.Smoothie;
 
 import javax.swing.*;
 import java.util.ArrayList;

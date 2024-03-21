@@ -46,6 +46,4 @@ public class ViewReceipt extends BasicContainer {
         return goBackBTN;
     }
 
-    //TODO: Implement method for retrieving recieptText
-
 }

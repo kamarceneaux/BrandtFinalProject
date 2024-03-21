@@ -95,4 +95,11 @@ public class MenuScreen extends BasicContainer {
         return viewReceiptBtn;
     }
 
+    public JButton getProteinBarsBTN() {
+        return proteinBarsBTN;
+    }
+
+    public JButton getCookiesBTN() {
+        return cookiesBTN;
+    }
 }

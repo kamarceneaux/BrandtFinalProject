@@ -1,14 +1,15 @@
 package finalproject.utils.core;
 
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 public class Smoothie extends Item{
     private List<Ingredient> ingredients;
     private List<Ingredient> modifiedIngredients;
     private List<String> textToBeOutputted = new ArrayList<>();
-    private final List<Ingredient> allIngredients = SmoothieManager.ALL_POSSIBLE_INGREDIENTS;
 
     public Smoothie(String name){
         this(6.69, name);
@@ -71,7 +72,7 @@ public class Smoothie extends Item{
                 i++;
             } else {
 //                System.out.println("Added Item: " + copyOfModifiedIngredients.get(j));
-                textToBeOutputted.add(String.format("Added Item: %s", copyOfModifiedIngredients.get(i)));
+                textToBeOutputted.add(String.format("Added Item: %s", copyOfModifiedIngredients.get(j)));
                 j++;
             }
         }
@@ -84,7 +85,7 @@ public class Smoothie extends Item{
         }
         while (j < copyOfModifiedIngredients.size()) {
 //            System.out.println("Added Item: " + copyOfModifiedIngredients.get(j));
-            textToBeOutputted.add(String.format("Added Item: %s", copyOfModifiedIngredients.get(i)));
+            textToBeOutputted.add(String.format("Added Item: %s", copyOfModifiedIngredients.get(j)));
             j++;
         }
 

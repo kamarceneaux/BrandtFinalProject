@@ -3,7 +3,7 @@ package finalproject.utils.screens;
 import basicgraphics.BasicContainer;
 import finalproject.utils.core.Ingredient;
 import finalproject.utils.core.Smoothie;
-import finalproject.utils.core.SmoothieManager;
+import finalproject.utils.core.managers.SmoothieManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -51,7 +51,7 @@ public class SmoothieCustomizationPage extends BasicContainer {
         currentSmoothieLbl.setText(smoothieLbl);
 
         // The Following Block is Responsible for Data State for Ingredients
-        // Reseting ingredients when transfering between smoothie objects.
+        // Resetting ingredients when transfering between smoothie objects.
         if(workingSmoothie.getIngredients() == null){
             workingSmoothie.setIngredients(new ArrayList<>());
         }

@@ -48,10 +48,6 @@ public class Item {
         return type;
     }
 
-    public void setType(TypeOfItem type) {
-        this.type = type;
-    }
-
     @Override
     public String toString() {
         return String.format("%s: $%.2f", name, price);

@@ -3,11 +3,8 @@ package finalproject;
 import basicgraphics.BasicFrame;
 import finalproject.utils.core.Cart;
 import finalproject.utils.core.Smoothie;
-import finalproject.utils.core.SmoothieManager;
-import finalproject.utils.screens.MenuScreen;
-import finalproject.utils.screens.SmoothieCustomizationPage;
-import finalproject.utils.screens.StartPage;
-import finalproject.utils.screens.ViewReceipt;
+import finalproject.utils.core.managers.SmoothieManager;
+import finalproject.utils.screens.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,6 +14,7 @@ import java.awt.event.ActionListener;
 /**
  * Goal of this app is to be a menu ordering application for a smoothie place. Users can place their order from various of
  * items and then see a receipt and pricing of the order.
+ * Users will be assigned a series of instructions and have to follow the instructions.
  *
  * @author Kameron Arceneaux
  */
@@ -49,6 +47,8 @@ public class App {
         SmoothieCustomizationPage customizationPage = new SmoothieCustomizationPage();
         content.add(customizationPage,"customizationPage");
 
+        BarPage barPage = new BarPage();
+        content.add(barPage, "barPage");
 
         // The button for the startpage that guides the user to the next action.
         startPage.getStartButton().addActionListener(new ActionListener() {
@@ -59,6 +59,17 @@ public class App {
             }
         });
 
+        // Listener to get to all the possible protein bars to pick from.
+        menuGame.getProteinBarsBTN().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cards.show(content, "barPage");
+                barPage.requestFocus();
+            }
+        });
+
+
+        // View the receipt of a order
         menuGame.getViewReceiptBtn().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -67,6 +78,8 @@ public class App {
             }
         });
 
+
+        // From the receipt page, go back to the main page
         viewReceipt.getGoBackBTN().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -101,8 +114,6 @@ public class App {
                 }
             });
         }
-
-
 
         // Responsible for going back to previous page
         customizationPage.getBackButton().addActionListener(new ActionListener() {
@@ -144,7 +155,6 @@ public class App {
 
                 }
 
-                //TODO: Add functionality for the reciept text to be shown.
                 viewReceipt.setTextForLabel(cart.toString());
 
                 // Return back to menu screen
@@ -152,6 +162,16 @@ public class App {
                 menuGame.requestFocus();
             }
         });
+
+        // Functionality for Going back to menuscreen from item screen
+        barPage.getGoBackBtn().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cards.show(content, "menuGame");
+                menuGame.requestFocus();
+            }
+        });
+
 
         // Functionality for Submitting Instructions/Order
         menuGame.getSubmitButton().addActionListener(new ActionListener() {
