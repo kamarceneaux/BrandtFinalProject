@@ -2,8 +2,11 @@ package finalproject.utils.screens;
 
 import basicgraphics.BasicContainer;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +43,7 @@ public class MenuScreen extends BasicContainer {
     }
     
     private void buttons(){
-        JLabel receiptTitle = new JLabel("VIEW RECIEPT: ");
+        JLabel receiptTitle = new JLabel("Additional Options");
         Font bigFont = receiptTitle.getFont().deriveFont(Font.BOLD, 24f);
         receiptTitle.setFont(bigFont);
         receiptTitle.setVerticalAlignment(SwingConstants.TOP);

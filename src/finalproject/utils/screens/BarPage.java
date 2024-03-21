@@ -1,9 +1,12 @@
 package finalproject.utils.screens;
 
 import basicgraphics.BasicContainer;
+import finalproject.utils.core.Item;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import java.awt.Dimension;
+import java.util.ArrayList;
 
 public class BarPage extends BasicContainer {
 
@@ -18,6 +21,7 @@ public class BarPage extends BasicContainer {
     private final JButton peanutBtn = new JButton("Peanut Butter Powerhouse");
     private final JButton bananaBtn = new JButton("Banana Bread Buff Bar");
     private final JButton goBackBtn = new JButton("Go Back");
+    private final ArrayList<JButton> allOptionsForBtns = new ArrayList<>();
 
     public BarPage(){
         super();
@@ -33,13 +37,22 @@ public class BarPage extends BasicContainer {
         bananaBtn.setPreferredSize(new Dimension(250, 75));
 
         // Setup Buttons for the Item Customization Page
+        allOptionsForBtns.add(mochaBtn);
         add("mochaBtn", mochaBtn);
+        allOptionsForBtns.add(peanutBtn);
         add("peanutBtn", peanutBtn);
+        allOptionsForBtns.add(bananaBtn);
         add("bananaBtn", bananaBtn);
+
+        // Adds the goBack Button
         add("goBack", goBackBtn);
     }
 
     public JButton getGoBackBtn() {
         return goBackBtn;
+    }
+
+    public ArrayList<JButton> getAllOptionsForBtns() {
+        return allOptionsForBtns;
     }
 }

@@ -1,13 +1,18 @@
 package finalproject;
 
 import basicgraphics.BasicFrame;
+import basicgraphics.ClockWorker;
 import finalproject.utils.core.Cart;
+import finalproject.utils.core.Item;
 import finalproject.utils.core.Smoothie;
+import finalproject.utils.core.managers.ItemManager;
 import finalproject.utils.core.managers.SmoothieManager;
 import finalproject.utils.screens.*;
 
 import javax.swing.*;
-import java.awt.*;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -24,6 +29,7 @@ public class App {
         public void show() {
             super.show();
             bf.jf.setSize(800, 600);
+            bf.jf.setResizable(false);
         }
     };
 
@@ -31,6 +37,7 @@ public class App {
     private Cart cart = new Cart();
     private MenuScreen menuGame = new MenuScreen();
     private ViewReceipt viewReceipt = new ViewReceipt();
+    private ItemManager itemManager = new ItemManager();
 
     public void run(){
         final Container content = bf.getContentPane();
@@ -69,7 +76,7 @@ public class App {
         });
 
 
-        // View the receipt of a order
+        // View the receipt of an order
         menuGame.getViewReceiptBtn().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -90,22 +97,11 @@ public class App {
 
         // Responsible for generating the Customization Page for Smoothies
         for (JButton button: menuGame.getButtonsForSmoothies()){
-            button.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    Smoothie currentSmoothie = smoothieManager.generateSmoothie(button);
-                    // Passes the smoothie corresponding to each button.
-                    customizationPage.setInformation(currentSmoothie);
-                    customizationPage.setNewSetofIngredients(null);
-                    customizationPage.setCurrentSmoothieLbl(currentSmoothie.getName());
-                    customizationPage.loadButtonData();
-                    cards.show(content, "customizationPage");
-                    customizationPage.requestFocus();
-                }
-            });
+            showSpecificSmoothieCustomizationPage(button, customizationPage, cards, content);
         }
 
-        // Modifies a Smoothie Element
+
+        // Modifies a Smoothie Ingredient
         for(JButton button: customizationPage.getAllCustomizationButtons()){
             button.addActionListener(new ActionListener() {
                 @Override
@@ -114,7 +110,38 @@ public class App {
                 }
             });
         }
+        returnToPrevPageFromSmoothieCustomization(customizationPage, cards, content);
+        processSmoothieToCartSubmission(customizationPage, cards, content);
+        fromItemScreenGoToMenuScreen(barPage.getGoBackBtn(), cards, content);
 
+        // Any Actions Involving the Protein Bars or Cookies
+        actionsWithProteinBarBtns(barPage, cart);
+        submitOrder();
+
+        bf.show();
+    }
+
+    private void showSpecificSmoothieCustomizationPage(JButton button, SmoothieCustomizationPage customizationPage, CardLayout cards, Container content) {
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Smoothie currentSmoothie = smoothieManager.generateSmoothie(button);
+                // Passes the smoothie corresponding to each button.
+                customizationPage.setInformation(currentSmoothie);
+
+                // Resets the ingredients for the project
+                customizationPage.setNewSetofIngredients(null);
+                customizationPage.setCurrentSmoothieLbl(currentSmoothie.getName());
+
+                // Loads data about a button
+                customizationPage.loadButtonData();
+                cards.show(content, "customizationPage");
+                customizationPage.requestFocus();
+            }
+        });
+    }
+
+    private void returnToPrevPageFromSmoothieCustomization(SmoothieCustomizationPage customizationPage, CardLayout cards, Container content) {
         // Responsible for going back to previous page
         customizationPage.getBackButton().addActionListener(new ActionListener() {
             @Override
@@ -133,7 +160,9 @@ public class App {
                 menuGame.requestFocus();
             }
         });
+    }
 
+    private void processSmoothieToCartSubmission(SmoothieCustomizationPage customizationPage, CardLayout cards, Container content) {
         //Functionality for Submitting the customization of a smoothie
         customizationPage.getSubmitButton().addActionListener(new ActionListener() {
             @Override
@@ -152,27 +181,34 @@ public class App {
                         JButton btn = customizationPage.getAllCustomizationButtons().get(i);
                         btn.setForeground(Color.black);
                     }
-
                 }
 
-                viewReceipt.setTextForLabel(cart.toString());
+                // Update the text for the label
+                updateReceiptText();
 
                 // Return back to menu screen
                 cards.show(content, "menuGame");
                 menuGame.requestFocus();
             }
         });
+    }
 
+    private void updateReceiptText() {
+        viewReceipt.setTextForLabel(cart.toString());
+    }
+
+    private void fromItemScreenGoToMenuScreen(JButton barPage, CardLayout cards, Container content) {
         // Functionality for Going back to menuscreen from item screen
-        barPage.getGoBackBtn().addActionListener(new ActionListener() {
+        barPage.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 cards.show(content, "menuGame");
                 menuGame.requestFocus();
             }
         });
+    }
 
-
+    private void submitOrder() {
         // Functionality for Submitting Instructions/Order
         menuGame.getSubmitButton().addActionListener(new ActionListener() {
             @Override
@@ -181,13 +217,26 @@ public class App {
                 System.out.println(cart.getTotal());
             }
         });
+    }
 
-        bf.show();
+    private void actionsWithProteinBarBtns(BarPage barPage, Cart cart) {
+        // Responsible for the actions whenever you add a protein bar
+        for(JButton button: barPage.getAllOptionsForBtns()){
+            button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    Item currentItem = itemManager.generateProteinBar(button);
+                    cart.addItem(currentItem);
+                    JOptionPane.showMessageDialog(barPage, String.format("Successfully added one (1) %s", currentItem.getName()),
+                            "Successfully Added The Item", 1);
+                    updateReceiptText();
+                }
+            });
+        }
     }
 
     public static void main(String[] args) {
         App app = new App();
         app.run();
     }
-
 }

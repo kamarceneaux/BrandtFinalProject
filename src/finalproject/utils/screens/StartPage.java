@@ -2,8 +2,11 @@ package finalproject.utils.screens;
 
 import basicgraphics.BasicContainer;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+import java.awt.Dimension;
+import java.awt.Font;
 
 public class StartPage extends BasicContainer {
     private JButton startButton = new JButton("Start Game!");

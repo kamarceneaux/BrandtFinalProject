@@ -5,8 +5,12 @@ import finalproject.utils.core.Ingredient;
 import finalproject.utils.core.Smoothie;
 import finalproject.utils.core.managers.SmoothieManager;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,9 +20,8 @@ public class SmoothieCustomizationPage extends BasicContainer {
     private final JLabel currentSmoothieLbl = new JLabel("");
     private final List<JButton> allCustomizationButtons = new ArrayList<>();
     private List<Ingredient> newSetofIngredients;
-
-
     private Smoothie workingSmoothie;
+
     private static String[][] stringLayout = {
             {"BackButton", "upGap", "upGap", "upGap"},
             {"_", "_", "_", "_"},

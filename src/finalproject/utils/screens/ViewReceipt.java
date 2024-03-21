@@ -2,8 +2,10 @@ package finalproject.utils.screens;
 
 import basicgraphics.BasicContainer;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import java.awt.Dimension;
 
 public class ViewReceipt extends BasicContainer {
 

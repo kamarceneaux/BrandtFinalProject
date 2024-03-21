@@ -24,10 +24,6 @@ public class Item {
         return price;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -50,6 +46,6 @@ public class Item {
 
     @Override
     public String toString() {
-        return String.format("%s: $%.2f", name, price);
+        return String.format("%s: $%.2f<br>", name, price);
     }
 }
