@@ -1,7 +1,6 @@
 package finalproject;
 
 import basicgraphics.BasicFrame;
-import basicgraphics.ClockWorker;
 import finalproject.utils.core.Cart;
 import finalproject.utils.core.Item;
 import finalproject.utils.core.Smoothie;
@@ -9,7 +8,8 @@ import finalproject.utils.core.managers.ItemManager;
 import finalproject.utils.core.managers.SmoothieManager;
 import finalproject.utils.screens.*;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Container;
@@ -57,6 +57,9 @@ public class App {
         BarPage barPage = new BarPage();
         content.add(barPage, "barPage");
 
+        CookiePage cookiePage = new CookiePage();
+        content.add(cookiePage, "cookiePage");
+
         // The button for the startpage that guides the user to the next action.
         startPage.getStartButton().addActionListener(new ActionListener() {
             @Override
@@ -72,6 +75,15 @@ public class App {
             public void actionPerformed(ActionEvent e) {
                 cards.show(content, "barPage");
                 barPage.requestFocus();
+            }
+        });
+
+        // Listener to get to COOKIE SCREEN
+        menuGame.getCookiesBTN().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cards.show(content, "cookiePage");
+                cookiePage.requestFocus();
             }
         });
 
@@ -112,15 +124,22 @@ public class App {
         }
         returnToPrevPageFromSmoothieCustomization(customizationPage, cards, content);
         processSmoothieToCartSubmission(customizationPage, cards, content);
+
+        // Responsible for the go back buttons
         fromItemScreenGoToMenuScreen(barPage.getGoBackBtn(), cards, content);
+        fromItemScreenGoToMenuScreen(cookiePage.getGoBackBtn(), cards, content);
 
         // Any Actions Involving the Protein Bars or Cookies
         actionsWithProteinBarBtns(barPage, cart);
+        actionsWithCookieBtns(cookiePage, cart);
         submitOrder();
 
         bf.show();
     }
 
+    /**
+     * This shows the specific smoothie customization page for the smoothie.
+     */
     private void showSpecificSmoothieCustomizationPage(JButton button, SmoothieCustomizationPage customizationPage, CardLayout cards, Container content) {
         button.addActionListener(new ActionListener() {
             @Override
@@ -193,6 +212,9 @@ public class App {
         });
     }
 
+    /**
+     * Update the receiptText based on an action.
+     */
     private void updateReceiptText() {
         viewReceipt.setTextForLabel(cart.toString());
     }
@@ -219,6 +241,9 @@ public class App {
         });
     }
 
+    /**
+     * Actions for dealing with protein bars
+     */
     private void actionsWithProteinBarBtns(BarPage barPage, Cart cart) {
         // Responsible for the actions whenever you add a protein bar
         for(JButton button: barPage.getAllOptionsForBtns()){
@@ -228,6 +253,24 @@ public class App {
                     Item currentItem = itemManager.generateProteinBar(button);
                     cart.addItem(currentItem);
                     JOptionPane.showMessageDialog(barPage, String.format("Successfully added one (1) %s", currentItem.getName()),
+                            "Successfully Added The Item", 1);
+                    updateReceiptText();
+                }
+            });
+        }
+    }
+
+    /**
+     * Actions for dealing adding cookies
+     */
+    private void actionsWithCookieBtns(CookiePage cookiePage, Cart cart){
+        for (JButton btn: cookiePage.getAllOptionsForBtns()){
+            btn.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    Item currentItem = itemManager.generateCookie(btn);
+                    cart.addItem(currentItem);
+                    JOptionPane.showMessageDialog(cookiePage, String.format("Successfully added one (1) %s", currentItem.getName()),
                             "Successfully Added The Item", 1);
                     updateReceiptText();
                 }

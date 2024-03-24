@@ -3,25 +3,23 @@ package finalproject.utils.screens;
 import basicgraphics.BasicContainer;
 
 import javax.swing.*;
-import java.awt.Dimension;
+import java.awt.*;
 import java.util.ArrayList;
 
-public class BarPage extends BasicContainer {
-
+public class CookiePage extends BasicContainer {
     private final static String[][] layout = {
             {"title"},
-            {"mochaBtn", "peanutBtn", "bananaBtn"},
+            {"sugarBtn", "chocBtn"},
             {"goBack"}
     };
 
-    private final JLabel title = new JLabel("Other Items To Be Added");
-    private final JButton mochaBtn = new JButton("Mocha Madness Muscle Mender");
-    private final JButton peanutBtn = new JButton("Peanut Butter Powerhouse");
-    private final JButton bananaBtn = new JButton("Banana Bread Buff Bar");
+    private final JLabel title = new JLabel("Cookies Page");
+    private final JButton sugarBtn = new JButton("Sugar Cookie");
+    private final JButton chocChipBtn = new JButton("Chocolate Chip");
     private final JButton goBackBtn = new JButton("Go Back");
     private final ArrayList<JButton> allOptionsForBtns = new ArrayList<>();
 
-    public BarPage(){
+    public CookiePage(){
         super();
         setStringLayout(layout);
         title.setHorizontalAlignment(SwingConstants.CENTER);
@@ -31,17 +29,14 @@ public class BarPage extends BasicContainer {
 
     private void buttons(){
         // Resize buttons for Java
-        mochaBtn.setPreferredSize(new Dimension(250, 75));
-        peanutBtn.setPreferredSize(new Dimension(250, 75));
-        bananaBtn.setPreferredSize(new Dimension(250, 75));
+        sugarBtn.setPreferredSize(new Dimension(250, 75));
+        chocChipBtn.setPreferredSize(new Dimension(250, 75));
 
         // Setup Buttons for the Item Customization Page
-        allOptionsForBtns.add(mochaBtn);
-        add("mochaBtn", mochaBtn);
-        allOptionsForBtns.add(peanutBtn);
-        add("peanutBtn", peanutBtn);
-        allOptionsForBtns.add(bananaBtn);
-        add("bananaBtn", bananaBtn);
+        allOptionsForBtns.add(sugarBtn);
+        add("sugarBtn", sugarBtn);
+        allOptionsForBtns.add(chocChipBtn);
+        add("chocBtn", chocChipBtn);
 
         // Adds the goBack Button
         add("goBack", goBackBtn);

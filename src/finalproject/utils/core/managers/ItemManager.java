@@ -18,10 +18,15 @@ public class ItemManager {
         } else if (btn.getText().equals("Banana Bread Buff Bar")) {
             return new Item(4.99, "Banana Bread Buff Bar", TypeOfItem.SNACK);
         }
-        return new Item(0,"Default Smoothie", TypeOfItem.SNACK);
+        return null;
     }
 
     public Item generateCookie(JButton btn){
-        return new Item(2.34, "something", TypeOfItem.SNACK);
+        if(btn.getText().contains("Sugar")){
+            return new Item(3.99, "Sugar Cookie", TypeOfItem.SNACK);
+        } else if (btn.getText().contains("Chocolate Chip")) {
+            return new Item(3.99, "Chocolate Chip Cookie", TypeOfItem.SNACK);
+        }
+        return null;
     }
 }

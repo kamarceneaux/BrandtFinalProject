@@ -3,7 +3,7 @@ package finalproject.utils.core;
 /**
  * Represents the basic function of every item a user can purchase or buy.
  */
-public class Item {
+public class Item implements Comparable<Item> {
     private double price;
     private String description;
     private String name;
@@ -40,12 +40,13 @@ public class Item {
         this.name = name;
     }
 
-    public TypeOfItem getType() {
-        return type;
-    }
-
     @Override
     public String toString() {
         return String.format("%s: $%.2f<br>", name, price);
+    }
+
+    @Override
+    public int compareTo(Item o) {
+        return this.name.compareTo(o.getName());
     }
 }
