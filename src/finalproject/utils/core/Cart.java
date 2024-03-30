@@ -17,6 +17,10 @@ public class Cart {
         return total;
     }
 
+    public void setTotal(double total) {
+        this.total = total;
+    }
+
     public void addItem(Item i){
         items.add(i);
         getTotal();
@@ -42,12 +46,15 @@ public class Cart {
         return sb.toString();
     }
 
+    public List<Item> getItems() {
+        return items;
+    }
+
+
     /**
      * Clears a cart
      */
     public void clearCart(){
-        for (int i = items.size() - 1; i >= 0; i--) {
-            items.remove(i);
-        }
+        items.clear();
     }
 }

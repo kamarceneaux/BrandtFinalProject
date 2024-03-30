@@ -37,6 +37,7 @@ public class App {
     private Cart cart = new Cart();
     private MenuScreen menuGame = new MenuScreen();
     private ViewReceipt viewReceipt = new ViewReceipt();
+    private DeleteItemsPage deleteItemsPage = new DeleteItemsPage(cart);
     private ItemManager itemManager = new ItemManager();
 
     public void run(){
@@ -50,6 +51,7 @@ public class App {
 
         content.add(menuGame,"menuGame");
         content.add(viewReceipt, "viewReceipt");
+        content.add(deleteItemsPage, "deleteItems");
 
         SmoothieCustomizationPage customizationPage = new SmoothieCustomizationPage();
         content.add(customizationPage,"customizationPage");
@@ -87,6 +89,42 @@ public class App {
             }
         });
 
+        //From MenuPage --> DeleteItem
+        menuGame.getDeleteItemBtn().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cards.show(content, "deleteItems");
+                deleteItemsPage.requestFocus();
+            }
+        });
+
+        // From DeleteItem --> MenuPage without saving items.
+        deleteItemsPage.getGoBackBTN().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cards.show(content, "menuGame");
+                menuGame.requestFocus();
+            }
+        });
+
+        // From DeleteItem --> process deleting items
+        deleteItemsPage.getDeleteItemsBtn().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    deleteItemsPage.deleteItems();
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(deleteItemsPage, ex.getMessage());
+                } finally {
+                    deleteItemsPage.getTextInput().setText("");
+                    deleteItemsPage.setTextForLabel();
+                    viewReceipt.setTextForLabel(cart.toString());
+                }
+
+                JOptionPane.showMessageDialog(deleteItemsPage, "Successfully removed the item.");
+
+            }
+        });
 
         // View the receipt of an order
         menuGame.getViewReceiptBtn().addActionListener(new ActionListener() {
@@ -123,15 +161,15 @@ public class App {
             });
         }
         returnToPrevPageFromSmoothieCustomization(customizationPage, cards, content);
-        processSmoothieToCartSubmission(customizationPage, cards, content);
+        processSmoothieToCartSubmission(customizationPage, cards, content, deleteItemsPage);
 
         // Responsible for the go back buttons
         fromItemScreenGoToMenuScreen(barPage.getGoBackBtn(), cards, content);
         fromItemScreenGoToMenuScreen(cookiePage.getGoBackBtn(), cards, content);
 
         // Any Actions Involving the Protein Bars or Cookies
-        actionsWithProteinBarBtns(barPage, cart);
-        actionsWithCookieBtns(cookiePage, cart);
+        actionsWithProteinBarBtns(barPage, cart, deleteItemsPage);
+        actionsWithCookieBtns(cookiePage, cart, deleteItemsPage);
         submitOrder();
 
         bf.show();
@@ -181,7 +219,7 @@ public class App {
         });
     }
 
-    private void processSmoothieToCartSubmission(SmoothieCustomizationPage customizationPage, CardLayout cards, Container content) {
+    private void processSmoothieToCartSubmission(SmoothieCustomizationPage customizationPage, CardLayout cards, Container content, DeleteItemsPage dp) {
         //Functionality for Submitting the customization of a smoothie
         customizationPage.getSubmitButton().addActionListener(new ActionListener() {
             @Override
@@ -204,6 +242,8 @@ public class App {
 
                 // Update the text for the label
                 updateReceiptText();
+                dp.setTextForLabel();
+
 
                 // Return back to menu screen
                 cards.show(content, "menuGame");
@@ -244,7 +284,7 @@ public class App {
     /**
      * Actions for dealing with protein bars
      */
-    private void actionsWithProteinBarBtns(BarPage barPage, Cart cart) {
+    private void actionsWithProteinBarBtns(BarPage barPage, Cart cart, DeleteItemsPage dp) {
         // Responsible for the actions whenever you add a protein bar
         for(JButton button: barPage.getAllOptionsForBtns()){
             button.addActionListener(new ActionListener() {
@@ -255,6 +295,7 @@ public class App {
                     JOptionPane.showMessageDialog(barPage, String.format("Successfully added one (1) %s", currentItem.getName()),
                             "Successfully Added The Item", 1);
                     updateReceiptText();
+                    dp.setTextForLabel();
                 }
             });
         }
@@ -263,7 +304,7 @@ public class App {
     /**
      * Actions for dealing adding cookies
      */
-    private void actionsWithCookieBtns(CookiePage cookiePage, Cart cart){
+    private void actionsWithCookieBtns(CookiePage cookiePage, Cart cart, DeleteItemsPage dp){
         for (JButton btn: cookiePage.getAllOptionsForBtns()){
             btn.addActionListener(new ActionListener() {
                 @Override
@@ -273,6 +314,7 @@ public class App {
                     JOptionPane.showMessageDialog(cookiePage, String.format("Successfully added one (1) %s", currentItem.getName()),
                             "Successfully Added The Item", 1);
                     updateReceiptText();
+                    dp.setTextForLabel();
                 }
             });
         }

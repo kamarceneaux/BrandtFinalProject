@@ -7,7 +7,6 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 
 public class BarPage extends BasicContainer {
-
     private final static String[][] layout = {
             {"title"},
             {"mochaBtn", "peanutBtn", "bananaBtn"},

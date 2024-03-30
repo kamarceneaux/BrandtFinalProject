@@ -16,12 +16,14 @@ public class MenuScreen extends BasicContainer {
             {"instructions", "instructions", "submit"},
             {"item1", "item2", "receipt_text"},
             {"item3", "item4", "viewReceipt"},
-            {"item5", "item6", "receipt"},
+            {"item5", "item6", "deleteItems"},
             {"item7", "item8", "receipt"},
             {"proteinBars", "cookies", "receipt"},
     };
     private List<JButton> buttonsForSmoothies = new ArrayList<>();
     private final JButton viewReceiptBtn = new JButton("View Receipt");
+    private final JButton deleteItemBtn = new JButton("Delete Items");
+
     private final JButton blastoffSmoothieBTN = new JButton("Berry Blastoff Smoothie");
     private final JButton butterJellyTimeBTN = new JButton("Peanut Butter Jelly Time");
     private final JButton powerPotionBTN = new JButton("Power Potion");
@@ -84,6 +86,7 @@ public class MenuScreen extends BasicContainer {
 
         submitButton.setPreferredSize(new Dimension(225, 40));
         this.add("submit", submitButton);
+        this.add("deleteItems", deleteItemBtn);
     }
 
     public JButton getSubmitButton() {
@@ -104,5 +107,9 @@ public class MenuScreen extends BasicContainer {
 
     public JButton getCookiesBTN() {
         return cookiesBTN;
+    }
+
+    public JButton getDeleteItemBtn() {
+        return deleteItemBtn;
     }
 }
