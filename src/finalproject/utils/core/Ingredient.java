@@ -17,6 +17,19 @@ public class Ingredient implements Comparable<Ingredient>{
         return this.name.compareTo(o.getName());
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Ingredient){
+            Ingredient that = (Ingredient) obj;
+            if(this.name.equals(that.name)){
+                return true;
+            }else {
+                return false;
+            }
+        }
+        return false;
+    }
+
     public String getName(){
         return name;
     }

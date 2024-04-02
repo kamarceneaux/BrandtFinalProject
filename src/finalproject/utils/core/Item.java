@@ -46,6 +46,19 @@ public class Item implements Comparable<Item> {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Item){
+            Item that = (Item) obj;
+            if(this.name.equals(that.name) && this.price == that.price && this.type.equals(that.type)){
+                return true;
+            }else{
+                return false;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public int compareTo(Item o) {
         return this.name.compareTo(o.getName());
     }

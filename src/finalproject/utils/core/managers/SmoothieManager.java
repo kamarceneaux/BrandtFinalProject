@@ -5,13 +5,15 @@ import finalproject.utils.core.Smoothie;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 /**
  * This class is responsible for managing all the smoothie objects that are created
  */
 public class SmoothieManager {
-    public static List<Ingredient> ALL_POSSIBLE_INGREDIENTS = new ArrayList<>(
+    public final static List<Ingredient> ALL_POSSIBLE_INGREDIENTS = new ArrayList<>(
             List.of(new Ingredient("Strawberries"), //0
                     new Ingredient("Blueberries"), //1
                     new Ingredient("Raspberries"), //2
@@ -111,13 +113,14 @@ public class SmoothieManager {
 
     /**
      * Responsible for generating the Smoothie customization screen for the user.
+     *
      * @param btn
      * @return The Smoothie object
      */
-    public Smoothie generateSmoothie(JButton btn){
+    public Smoothie generateSmoothie(JButton btn) {
         String text = btn.getText();
 
-        if(text.contains("Blastoff")){
+        if (text.contains("Blastoff")) {
             return new Smoothie("Berry Blastoff Smoothie", berryIngredients);
         } else if (text.contains("Peanut")) {
             return new Smoothie("Peanut Butter Smoothie", pbIngredients);
@@ -135,6 +138,27 @@ public class SmoothieManager {
             return new Smoothie("Build your own Smoothie");
         }
         return null;
+    }
+
+    /**
+     * Method is used mainly to generate a random smoothie for order generation
+     * @return one singular smoothie for randomization.
+     */
+    public Smoothie generateSmoothie() {
+        List<Smoothie> allSmoothies = new ArrayList<>();
+        allSmoothies.add(new Smoothie("Berry Blastoff Smoothie", berryIngredients));
+        allSmoothies.add(new Smoothie("Peanut Butter Smoothie", pbIngredients));
+        allSmoothies.add(new Smoothie("Popeye's Power Potion", popeyeIngredients));
+        allSmoothies.add(new Smoothie("Cucumber Squeeze", cucumberIngredients));
+        allSmoothies.add(new Smoothie("Berry Oat-a-pult", oatIngredients));
+        allSmoothies.add(new Smoothie("Hulk's Secret Garden", hulkIngredients));
+        allSmoothies.add(new Smoothie("Monkey Business", monkeyIngredients));
+        allSmoothies.add(new Smoothie("Build your own Smoothie"));
+
+        // Randomly shuffle the smoothie
+        Collections.shuffle(allSmoothies);
+        Random random = new Random();
+        return allSmoothies.get(random.nextInt(allSmoothies.size()));
     }
 
 }
