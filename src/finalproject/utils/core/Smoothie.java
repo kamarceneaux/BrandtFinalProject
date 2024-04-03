@@ -141,4 +141,17 @@ public class Smoothie extends Item{
     public List<Ingredient> getModifiedIngredients() {
         return modifiedIngredients;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Smoothie){
+            Smoothie that = (Smoothie) obj;
+            if(this.getName().equals(that.getName())){
+                if(this.modifiedIngredients.equals(that.modifiedIngredients)) return true;
+                return false;
+            }
+            return false;
+        }
+        return false;
+    }
 }

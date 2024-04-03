@@ -18,6 +18,14 @@ public class Ingredient implements Comparable<Ingredient>{
     }
 
     @Override
+    public int hashCode() {
+        if(name.length() == 0){
+            return 0;
+        }
+        return name.charAt(0);
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if(obj instanceof Ingredient){
             Ingredient that = (Ingredient) obj;

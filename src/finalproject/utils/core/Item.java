@@ -46,6 +46,14 @@ public class Item implements Comparable<Item> {
     }
 
     @Override
+    public int hashCode() {
+        if(name.length() == 0){
+            return 0;
+        }
+        return (int) price;
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if(obj instanceof Item){
             Item that = (Item) obj;
