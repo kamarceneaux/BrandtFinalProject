@@ -1,9 +1,7 @@
 package finalproject.utils.core.logic;
 
-import finalproject.utils.core.Cart;
-import finalproject.utils.core.Ingredient;
-import finalproject.utils.core.Item;
-import finalproject.utils.core.Smoothie;
+import edu.lsu.cct.piraha.Ex;
+import finalproject.utils.core.*;
 import finalproject.utils.core.managers.ItemManager;
 import finalproject.utils.core.managers.SmoothieManager;
 
@@ -19,8 +17,7 @@ public class GameLogicManager {
     private int totalItems;
     private SmoothieManager smoothieManager = new SmoothieManager();
     private ItemManager itemManager = new ItemManager();
-    private int totalSmoothies;
-    private int otherItems;
+    private Map<String, Integer> correctData;
     private Cart correctItemsCart = new Cart();
 
     public void startLogic(){
@@ -29,10 +26,22 @@ public class GameLogicManager {
         scenario = 0;
 
         if(scenario == 0){
-            Map<String, Integer> correctData = generateAmountOfItems();
-
+            correctData = generateAmountOfItems();
             // Generate the correctItem Cart
-            buildCart(correctData);
+            buildCart();
+            System.out.println(generateDirections());
+
+            for (Item item: correctItemsCart.getItems()){
+                if(item instanceof Smoothie){
+                    Smoothie smoothie = (Smoothie) item;
+                    System.out.println(smoothie.getName());
+                    System.out.println(smoothie.getIngredients());
+                    System.out.println(smoothie.getModifiedIngredients());
+                    System.out.println("============");
+                }else {
+                    System.out.println(item);
+                }
+            }
 
         } else {
 
@@ -42,7 +51,7 @@ public class GameLogicManager {
     /**
      * Generate the correct data for generating scenarios.
      */
-    private Map<String, Integer> generateAmountOfItems(){
+    public Map<String, Integer> generateAmountOfItems(){
         Map<String, Integer> correctOrderData = new HashMap<>();
 
         // Total Items
@@ -70,14 +79,13 @@ public class GameLogicManager {
 
     /**
      * Responsible for building the cart for the correct items.
-     * @param data responsible the data that talks about the amount of smoothie options and more.
      */
-    public void buildCart(Map<String, Integer> data){
-        Integer amtOfSmoothieOptions = data.get("smoothieOptions");
+    public void buildCart(){
+        Integer amtOfSmoothieOptions = correctData.get("smoothieOptions");
         generateSmoothiesForCart(amtOfSmoothieOptions);
 
-        Integer amtOfCookies = data.get("totalCookies");
-        Integer amtOfBars = data.get("totalBars");
+        Integer amtOfCookies = correctData.get("totalCookies");
+        Integer amtOfBars = correctData.get("totalBars");
         generateItemsForCart(amtOfBars, amtOfCookies);
     }
 
@@ -109,10 +117,10 @@ public class GameLogicManager {
             allIngredients.addAll(SmoothieManager.ALL_POSSIBLE_INGREDIENTS);
 
             // If we are working with a byo smoothie, then we need new logic
-            if(smoothie.getName().equals("Build your own Smoothie")){
+            if(smoothie.getName().equalsIgnoreCase("Build your own Smoothie")){
                 // Contains every single possible ingredient we have to work with
                 // Generate amount of ingredients for a smoothie
-                int generateAmountOfIngredientsForSmoothie = random.nextInt(10) + 1;
+                int generateAmountOfIngredientsForSmoothie = random.nextInt(10) + 3;
                 Set<Ingredient> newSetModifiedIngredients = new HashSet<>();
 
                 // Add random ingredients to the smoothie
@@ -166,7 +174,177 @@ public class GameLogicManager {
         return correctItemsCart;
     }
 
-    private String generateDirections(){
-        return null;
+    public String generateDirections(){
+        return generateDirections(correctItemsCart);
     }
+
+    public String generateDirections(Cart cart){
+        StringBuilder sb = new StringBuilder();
+
+        // Determine a greeting if possible
+        String[] greetingChoices = {"Hey, how's it going? ", "Hi there! What's good today? "};
+        String startGreeting = greetingChoices[random.nextInt(greetingChoices.length)];
+        sb.append(startGreeting);
+
+        scenario = 0;
+        int counter = 0;
+        // If in scenario zero --> which is follow instructions.
+        if(scenario == 0){
+            List<Item> items = cart.getItems();
+            for(Item item: items){
+                if(item.getType().equals(TypeOfItem.SMOOTHIE)){
+                    Smoothie smoothie = (Smoothie) item;
+
+                    if(item.getName().equalsIgnoreCase("build your own smoothie")){
+                        // logic
+                        String instruction_text = buildYourOwnInstructions(smoothie, counter);
+                        sb.append(instruction_text);
+                        counter++;
+                    }else{
+                        // This means it's not a build your own smoothie
+                        String instruction_text = smoothieInstructions(smoothie, counter);
+                        sb.append(instruction_text);
+                        counter++;
+                    }
+                }
+            }
+        }
+        return sb.toString();
+    }
+
+    private String smoothieInstructions(Smoothie smoothie, int counter) {
+        List<Ingredient> originalIngredients = smoothie.getIngredients();
+        List<Ingredient> modifiedIngredients = smoothie.getModifiedIngredients();
+
+        Collections.sort(originalIngredients);
+        Collections.sort(modifiedIngredients);
+
+        List<Ingredient> addedIngredients = new ArrayList<>();
+        List<Ingredient> removedIngredients = new ArrayList<>();
+
+        StringBuilder sb = new StringBuilder();
+
+        if(counter == 0){
+            sb.append("Can I get a ");
+        }else{
+            sb.append("May I also get a ");
+        }
+
+        sb.append(String.format("%s ", smoothie.getName()));
+
+        if(originalIngredients.equals(modifiedIngredients)){
+            sb.append("as is. ");
+            return sb.toString();
+        }
+
+        // Check for added ingredients
+        for (Ingredient ingredient : modifiedIngredients) {
+            if (!originalIngredients.contains(ingredient)) {
+                addedIngredients.add(ingredient);
+            }
+        }
+
+        // Check for removed ingredients
+        for (Ingredient ingredient : originalIngredients) {
+            if (!modifiedIngredients.contains(ingredient)) {
+                removedIngredients.add(ingredient);
+            }
+        }
+
+        // Responsible for generating remove smoothies text.
+        if(removedIngredients.size() > 0){
+            sb.append("but remove ");
+            for(Ingredient ingredient: removedIngredients){
+                int checkToSeeIfLast = removedIngredients.indexOf(ingredient);
+                String ingredientName = ingredient.getName();
+
+                if(checkToSeeIfLast == removedIngredients.size() - 1 && removedIngredients.size() > 1){
+                    String replace = ingredientName.replaceAll(",\\s*", "");
+                    sb.append("and ");
+                    sb.append(replace + " ");
+                }else{
+                    if(removedIngredients.size() == 1){
+                        sb.append(String.format("%s ", ingredientName));
+                    }else{
+                        sb.append(String.format("%s, ", ingredientName));
+                    }
+                }
+            }
+            sb.append("from that smoothie. ");
+        }
+
+        if(!addedIngredients.isEmpty()){
+            if(removedIngredients.isEmpty()){
+                sb.append("do not remove anything, but could you add ");
+            }else{
+                sb.append("Would you mind adding ");
+            }
+            for(Ingredient ingredient: addedIngredients){
+                int checkToSeeIfLast = addedIngredients.indexOf(ingredient);
+                String ingredientName = ingredient.getName();
+
+                if(checkToSeeIfLast == addedIngredients.size() - 1 && addedIngredients.size() > 1){
+                    String replace = ingredientName.replaceAll(",\\s*", "");
+                    sb.append("and ");
+                    sb.append(replace + " ");
+                }else{
+                    if(addedIngredients.size() == 1){
+                        sb.append(String.format("%s ", ingredientName));
+                    }else{
+                        sb.append(String.format("%s, ", ingredientName));
+                    }
+                }
+            }
+            sb.append("to that smoothie. ");
+        }
+
+        return sb.toString();
+    }
+
+    /** Generates instructions for BYO smoothies. **/
+    private String buildYourOwnInstructions(Smoothie smoothie, int counter) {
+        StringBuilder sb = new StringBuilder();
+
+        if(counter == 0){
+            sb.append("can I get a ");
+        }else{
+            sb.append("May I also get a ");
+        }
+
+        sb.append(String.format("%s with ", smoothie.getName()));
+        List<Ingredient> addedIngredients = smoothie.getModifiedIngredients();
+
+        // Formats Ingredient Text
+        try{
+            for (Ingredient ingredient : addedIngredients){
+                int checkToSeeIfLast = addedIngredients.indexOf(ingredient);
+                String ingredientName = ingredient.getName();
+
+                if(checkToSeeIfLast == addedIngredients.size() - 1 && addedIngredients.size() > 1){
+                    String replace = ingredientName.replaceAll(",\\s*", "");
+                    sb.append("and ");
+                    sb.append(replace + ". ");
+                }else{
+                    sb.append(String.format("%s, ", ingredientName));
+                }
+            }
+        }catch (NullPointerException e){
+            for (Ingredient ingredient : smoothie.getIngredients()){
+                int checkToSeeIfLast = smoothie.getIngredients().indexOf(ingredient);
+                String ingredientName = ingredient.getName();
+
+                if(checkToSeeIfLast == smoothie.getIngredients().size() - 1 && smoothie.getIngredients().size() > 1){
+                    String replace = ingredientName.replaceAll(",\\s*", "");
+                    sb.append("and ");
+                    sb.append(replace + ". ");
+                }else{
+                    sb.append(String.format("%s, ", ingredientName));
+                }
+            }
+        }
+
+
+        return sb.toString();
+    }
+
 }

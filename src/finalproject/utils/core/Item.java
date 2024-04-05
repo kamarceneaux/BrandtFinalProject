@@ -40,6 +40,10 @@ public class Item implements Comparable<Item> {
         this.name = name;
     }
 
+    public TypeOfItem getType() {
+        return type;
+    }
+
     @Override
     public String toString() {
         return String.format("%s: $%.2f<br>", name, price);

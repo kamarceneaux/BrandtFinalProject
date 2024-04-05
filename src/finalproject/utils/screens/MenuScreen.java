@@ -2,9 +2,7 @@ package finalproject.utils.screens;
 
 import basicgraphics.BasicContainer;
 
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.util.ArrayList;
@@ -23,7 +21,6 @@ public class MenuScreen extends BasicContainer {
     private List<JButton> buttonsForSmoothies = new ArrayList<>();
     private final JButton viewReceiptBtn = new JButton("View Receipt");
     private final JButton deleteItemBtn = new JButton("Delete Items");
-
     private final JButton blastoffSmoothieBTN = new JButton("Berry Blastoff Smoothie");
     private final JButton butterJellyTimeBTN = new JButton("Peanut Butter Jelly Time");
     private final JButton powerPotionBTN = new JButton("Power Potion");
@@ -36,14 +33,31 @@ public class MenuScreen extends BasicContainer {
     private final JButton cookiesBTN = new JButton("View Cookies");
     private JButton submitButton = new JButton("Submit");
 
+    // Smoothie Instructions panel
+    private JLabel instructionsText = new JLabel("");
+    JTextArea textArea = new JTextArea();
+    private JScrollPane scrollPaneText = new JScrollPane(textArea);
+
     public MenuScreen() {
         super();
         this.setStringLayout(layoutForMenu);
         buttons();
+        setupInstructions();
 
         this.add("viewReceipt", viewReceiptBtn);
     }
-    
+
+    private void setupInstructions() {
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+
+        // Add the scroll pane
+        scrollPaneText.setPreferredSize(new Dimension(450, 100));
+        // Makes the scrollable only vertically scrollable.
+        scrollPaneText.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        this.add("instructions", scrollPaneText);
+    }
+
     private void buttons(){
         JLabel receiptTitle = new JLabel("Additional Options");
         Font bigFont = receiptTitle.getFont().deriveFont(Font.BOLD, 24f);
