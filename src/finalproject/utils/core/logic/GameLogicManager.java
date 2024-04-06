@@ -1,6 +1,5 @@
 package finalproject.utils.core.logic;
 
-import edu.lsu.cct.piraha.Ex;
 import finalproject.utils.core.*;
 import finalproject.utils.core.managers.ItemManager;
 import finalproject.utils.core.managers.SmoothieManager;
@@ -8,7 +7,7 @@ import finalproject.utils.core.managers.SmoothieManager;
 import java.util.*;
 
 public class GameLogicManager {
-    private static Random random = new Random();
+    private static final Random random = new Random();
     /*
     Scenario = 0 --> follow exact order
     Scenario = 1 --> make a order under a budget
@@ -191,6 +190,16 @@ public class GameLogicManager {
         // If in scenario zero --> which is follow instructions.
         if(scenario == 0){
             List<Item> items = cart.getItems();
+
+            // Responsible for tracking the countOfItems
+            HashMap<String, Integer> snackMap = new HashMap<>();
+            int mochaCount = 0, pbCount = 0, banaCount = 0, chocCount = 0, sugCount = 0;
+            snackMap.put("Mocha Madness Muscle Mender", mochaCount);
+            snackMap.put("Peanut Butter Powerhouse", pbCount);
+            snackMap.put("Banana Bread Buff Bar", banaCount);
+            snackMap.put("Chocolate Chip Cookie", chocCount);
+            snackMap.put("Sugar Cookie", sugCount);
+
             for(Item item: items){
                 if(item.getType().equals(TypeOfItem.SMOOTHIE)){
                     Smoothie smoothie = (Smoothie) item;
@@ -207,11 +216,86 @@ public class GameLogicManager {
                         counter++;
                     }
                 }
+                if(item.getType().equals(TypeOfItem.SNACK)){
+                    if(item.getName().equalsIgnoreCase("mocha madness muscle mender")){
+                        snackMap.put("Mocha Madness Muscle Mender", ++mochaCount);
+                    } else if (item.getName().equalsIgnoreCase("Peanut Butter Powerhouse")) {
+                        snackMap.put("Peanut Butter Powerhouse", ++pbCount);
+                    } else if (item.getName().equalsIgnoreCase("Banana Bread Buff Bar")) {
+                        snackMap.put("Banana Bread Buff Bar", ++banaCount);
+                    } else if (item.getName().equalsIgnoreCase("Chocolate Chip Cookie")) {
+                        snackMap.put("Chocolate Chip Cookie", ++chocCount);
+                    } else if (item.getName().equalsIgnoreCase("Sugar Cookie")) {
+                        snackMap.put("Sugar Cookie", ++sugCount);
+                    }
+                }
             }
+
+            // Generate Text for items to add
+            String itemsText = generateItemsText(snackMap);
+            sb.append(itemsText);
         }
         return sb.toString();
     }
 
+    /**
+     * Responsible for generating the instructions for the non smoothie items.
+     */
+    private String generateItemsText(HashMap<String, Integer> snackMap) {
+        StringBuilder sb = new StringBuilder();
+
+        HashMap<String, Integer> totalItemsInCart = new HashMap<>();
+
+        // loops through the snap map and checks to see if snack is in the cart or not.
+        // if it is zero, then it is not in the cart.
+        for (Map.Entry<String, Integer> entry : snackMap.entrySet()) {
+            if(entry.getValue() > 0){
+                totalItemsInCart.put(entry.getKey(), entry.getValue());
+            }
+        }
+
+        if(totalItemsInCart.size() > 0){
+            sb.append("I also would like ");
+            String conditional_s = totalItemsInCart.size() > 1 ? "following items " : "";
+            sb.append(conditional_s);
+        }
+
+        try{
+            int counter = 0;
+            for (Map.Entry<String, Integer> entry: totalItemsInCart.entrySet()){
+                String textRepresentation = convertToString(entry.getValue());
+                if(counter == totalItemsInCart.size() - 1 && totalItemsInCart.size() > 1){
+                        String replace = entry.getKey().replaceAll(",\\s*", "");
+                        sb.append("and ");
+                        sb.append(String.format("%s ", textRepresentation)).append(replace);
+                }else{
+                    if(totalItemsInCart.size() == 1){
+                        if(entry.getValue() > 1){
+                            sb.append(String.format("%s %s's", textRepresentation, entry.getKey()));
+                        }else{
+                            sb.append(String.format("%s %s", textRepresentation, entry.getKey()));
+                        }
+                    }else{
+                        if(entry.getValue() > 1){
+                            sb.append(String.format("%s %s's, ", textRepresentation, entry.getKey()));
+                        }else{
+                            sb.append(String.format("%s %s, ", textRepresentation, entry.getKey()));
+                        }
+                    }
+                    counter++;
+                }
+            }
+            if(!totalItemsInCart.isEmpty()) sb.append(".");
+        }catch (Exception e){
+            sb.append("I do not want any extra items. ");
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * Generate instructions for smoothies that aren't make your own.
+     */
     private String smoothieInstructions(Smoothie smoothie, int counter) {
         List<Ingredient> originalIngredients = smoothie.getIngredients();
         List<Ingredient> modifiedIngredients = smoothie.getModifiedIngredients();
@@ -224,6 +308,7 @@ public class GameLogicManager {
 
         StringBuilder sb = new StringBuilder();
 
+        // Responsible for the introduction
         if(counter == 0){
             sb.append("Can I get a ");
         }else{
@@ -232,6 +317,7 @@ public class GameLogicManager {
 
         sb.append(String.format("%s ", smoothie.getName()));
 
+        // If a smoothie has ZERO modifications.
         if(originalIngredients.equals(modifiedIngredients)){
             sb.append("as is. ");
             return sb.toString();
@@ -252,7 +338,7 @@ public class GameLogicManager {
         }
 
         // Responsible for generating remove smoothies text.
-        if(removedIngredients.size() > 0){
+        if(!removedIngredients.isEmpty()){
             sb.append("but remove ");
             for(Ingredient ingredient: removedIngredients){
                 int checkToSeeIfLast = removedIngredients.indexOf(ingredient);
@@ -261,7 +347,7 @@ public class GameLogicManager {
                 if(checkToSeeIfLast == removedIngredients.size() - 1 && removedIngredients.size() > 1){
                     String replace = ingredientName.replaceAll(",\\s*", "");
                     sb.append("and ");
-                    sb.append(replace + " ");
+                    sb.append(replace).append(" ");
                 }else{
                     if(removedIngredients.size() == 1){
                         sb.append(String.format("%s ", ingredientName));
@@ -286,7 +372,7 @@ public class GameLogicManager {
                 if(checkToSeeIfLast == addedIngredients.size() - 1 && addedIngredients.size() > 1){
                     String replace = ingredientName.replaceAll(",\\s*", "");
                     sb.append("and ");
-                    sb.append(replace + " ");
+                    sb.append(replace).append(" ");
                 }else{
                     if(addedIngredients.size() == 1){
                         sb.append(String.format("%s ", ingredientName));
@@ -323,7 +409,7 @@ public class GameLogicManager {
                 if(checkToSeeIfLast == addedIngredients.size() - 1 && addedIngredients.size() > 1){
                     String replace = ingredientName.replaceAll(",\\s*", "");
                     sb.append("and ");
-                    sb.append(replace + ". ");
+                    sb.append(replace).append(". ");
                 }else{
                     sb.append(String.format("%s, ", ingredientName));
                 }
@@ -336,7 +422,7 @@ public class GameLogicManager {
                 if(checkToSeeIfLast == smoothie.getIngredients().size() - 1 && smoothie.getIngredients().size() > 1){
                     String replace = ingredientName.replaceAll(",\\s*", "");
                     sb.append("and ");
-                    sb.append(replace + ". ");
+                    sb.append(replace).append(". ");
                 }else{
                     sb.append(String.format("%s, ", ingredientName));
                 }
@@ -345,6 +431,33 @@ public class GameLogicManager {
 
 
         return sb.toString();
+    }
+
+    public static String convertToString(int number) {
+        switch (number) {
+            case 1:
+                return "one";
+            case 2:
+                return "two";
+            case 3:
+                return "three";
+            case 4:
+                return "four";
+            case 5:
+                return "five";
+            case 6:
+                return "six";
+            case 7:
+                return "seven";
+            case 8:
+                return "eight";
+            case 9:
+                return "nine";
+            case 10:
+                return "ten";
+            default:
+                return "unsupported";
+        }
     }
 
 }
