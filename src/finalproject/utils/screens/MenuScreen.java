@@ -35,7 +35,7 @@ public class MenuScreen extends BasicContainer {
 
     // Smoothie Instructions panel
     private JLabel instructionsText = new JLabel("");
-    JTextArea textArea = new JTextArea();
+    private JTextArea textArea = new JTextArea();
     private JScrollPane scrollPaneText = new JScrollPane(textArea);
 
     public MenuScreen() {
@@ -125,5 +125,9 @@ public class MenuScreen extends BasicContainer {
 
     public JButton getDeleteItemBtn() {
         return deleteItemBtn;
+    }
+
+    public void setInstructionsText(String text) {
+        textArea.setText(text);
     }
 }

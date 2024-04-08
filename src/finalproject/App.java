@@ -2,8 +2,10 @@ package finalproject;
 
 import basicgraphics.BasicFrame;
 import finalproject.utils.core.Cart;
+import finalproject.utils.core.GameInformationError;
 import finalproject.utils.core.Item;
 import finalproject.utils.core.Smoothie;
+import finalproject.utils.core.logic.GameLogicManager;
 import finalproject.utils.core.managers.ItemManager;
 import finalproject.utils.core.managers.SmoothieManager;
 import finalproject.utils.screens.*;
@@ -39,8 +41,9 @@ public class App {
     private ViewReceipt viewReceipt = new ViewReceipt();
     private DeleteItemsPage deleteItemsPage = new DeleteItemsPage(cart);
     private ItemManager itemManager = new ItemManager();
+    private GameLogicManager gameLogicManager = new GameLogicManager();
 
-    public void run(){
+    public void run()  {
         final Container content = bf.getContentPane();
         final CardLayout cards = new CardLayout();
         content.setLayout(cards);
@@ -66,8 +69,10 @@ public class App {
         startPage.getStartButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                gameLogicManager.startLogic();
                 cards.show(content, "menuGame");
                 menuGame.requestFocus();
+                menuGame.setInstructionsText(gameLogicManager.getInstructions());
             }
         });
 
@@ -170,6 +175,8 @@ public class App {
         // Any Actions Involving the Protein Bars or Cookies
         actionsWithProteinBarBtns(barPage, cart, deleteItemsPage);
         actionsWithCookieBtns(cookiePage, cart, deleteItemsPage);
+
+        // Responsibility for whenever a order is submitted
         submitOrder();
 
         bf.show();
@@ -278,13 +285,22 @@ public class App {
         menuGame.getSubmitButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println(cart);
-                System.out.println(cart.getTotal());
+                // Check Game Logic
+                String exception = "The customer successfully recieved their order! They are very happy :)";
 
-                // Reset the cart
-                cart.resetCart();
-                updateReceiptText();
-                deleteItemsPage.setTextForLabel();
+                try {
+                    // Check Game Logic
+                    gameLogicManager.checkScenarioOne(cart);
+                } catch (GameInformationError ex) {
+                   exception = ex.getMessage();
+                } finally {
+                    System.out.println(exception);
+
+                    // Reset the cart
+                    cart.resetCart();
+                    updateReceiptText();
+                    deleteItemsPage.setTextForLabel();
+                }
             }
         });
     }

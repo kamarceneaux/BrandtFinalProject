@@ -575,4 +575,11 @@ public class GameLogicManager {
         }
     }
 
+    public String getInstructions() {
+        return instructions;
+    }
+
+    public int getScenario() {
+        return scenario;
+    }
 }
