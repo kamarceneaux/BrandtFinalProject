@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 
-public class Smoothie extends Item{
+public class Smoothie extends Item {
     private List<Ingredient> ingredients;
     private List<Ingredient> modifiedIngredients;
     private List<String> textToBeOutputted = new ArrayList<>();
@@ -143,10 +143,32 @@ public class Smoothie extends Item{
     }
 
     @Override
+    public int compareTo(Item o) {
+        int diff = super.compareTo(o);
+        if(diff != 0) return diff;
+        Smoothie that = (Smoothie) o;
+
+        List<Ingredient> myIngredients = this.getModifiedIngredients();
+        List<Ingredient> thatIngredients = that.getModifiedIngredients();
+        if (myIngredients.size() != thatIngredients.size()) {
+            return myIngredients.size() - thatIngredients.size();
+        }
+        for (int i = 0; i < myIngredients.size(); i++) {
+            int comparisonResult = myIngredients.get(i).compareTo(thatIngredients.get(i));
+            if (comparisonResult != 0) {
+                return comparisonResult;
+            }
+        }
+        return 0;
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if(obj instanceof Smoothie){
             Smoothie that = (Smoothie) obj;
             if(this.getName().equals(that.getName())){
+                Collections.sort(this.modifiedIngredients);
+                Collections.sort(that.modifiedIngredients);
                 if(this.modifiedIngredients.equals(that.modifiedIngredients)) return true;
                 return false;
             }

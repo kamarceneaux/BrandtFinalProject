@@ -3,6 +3,7 @@ package finalproject.utils.core;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Cart {
     private List<Item> items = new ArrayList<>();
@@ -50,11 +51,28 @@ public class Cart {
         return items;
     }
 
+    public int numberOfItems(){
+        return items.size();
+    }
 
     /**
      * Clears a cart
      */
     public void clearCart(){
         items.clear();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if(o instanceof Cart){
+            Cart that = (Cart) o;
+            return this.getItems().equals(that.getItems()) && this.total == that.total;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(items, total);
     }
 }

@@ -18,32 +18,132 @@ public class GameLogicManager {
     private ItemManager itemManager = new ItemManager();
     private Map<String, Integer> correctData;
     private Cart correctItemsCart = new Cart();
+    private String instructions;
 
     public void startLogic(){
-        // Follow Exact Order Sequence scenario
-
         scenario = 0;
 
+        // Follow Exact Order Sequence scenario
         if(scenario == 0){
             correctData = generateAmountOfItems();
             // Generate the correctItem Cart
             buildCart();
-            System.out.println(generateDirections());
+            instructions = generateDirections();
+        } else {
 
-            for (Item item: correctItemsCart.getItems()){
-                if(item instanceof Smoothie){
-                    Smoothie smoothie = (Smoothie) item;
-                    System.out.println(smoothie.getName());
-                    System.out.println(smoothie.getIngredients());
-                    System.out.println(smoothie.getModifiedIngredients());
-                    System.out.println("============");
+        }
+    }
+
+    /**
+     * Pass a users cart in and check if they have the same items.
+     * @param userCart
+     * @throws GameInformationError
+     */
+    public boolean checkScenarioOne(Cart userCart) throws GameInformationError {
+        return checkScenarioOne(userCart, correctItemsCart);
+    }
+
+    /**
+     * Code containing the information about the correct items.
+     * Mainly used for testing.
+     * @param userCart
+     * @param correctItems
+     * @return a boolean whether if the carts were equal or not.
+     * @throws GameInformationError
+     */
+    public boolean checkScenarioOne(Cart userCart, Cart correctItems) throws GameInformationError {
+        Comparator<Item> cartCompator = new Comparator<>() {
+            @Override
+            public int compare(Item o1, Item o2) {
+                int diff = o1.getType().compareTo(o2.getType());
+                if (diff != 0) return diff;
+                diff = o1.getName().compareTo(o2.getName());
+                if (diff != 0) return diff;
+                diff = (int) (o1.getPrice() - o2.getPrice());
+                return diff;
+            }
+        };
+        userCart.getItems().sort(cartCompator);
+        correctItems.getItems().sort(cartCompator);
+
+        if(userCart.equals(correctItems)){
+            return true;
+        }else{
+            // Check and see if there is a error for the cart Error for size of the cart
+            if(userCart.numberOfItems() != correctItems.numberOfItems()){
+                if(userCart.numberOfItems() > correctItems.numberOfItems())
+                    throw new GameInformationError("Too many items were given to the customer. BE BETTER. ");
+                if(userCart.numberOfItems() < correctItems.numberOfItems())
+                    throw new GameInformationError("The customer did not receive their complete order.");
+            }
+
+            // Split the cart into separate items.
+            List<Smoothie> smoothies = new ArrayList<>();
+            List<Item> otherItems = new ArrayList<>();
+
+            for(Item item: userCart.getItems()){
+                if(item.getType().equals(TypeOfItem.SMOOTHIE)){
+                    smoothies.add((Smoothie) item);
                 }else {
-                    System.out.println(item);
+                    otherItems.add(item);
                 }
             }
 
-        } else {
+            // Split the correct items cart into separate items
+            List<Smoothie> correctSmoothies = new ArrayList<>();
+            List<Item> correctOtherItems = new ArrayList<>();
 
+            for (Item item: correctItems.getItems()){
+                if(item.getType().equals(TypeOfItem.SMOOTHIE)){
+                    correctSmoothies.add((Smoothie) item);
+                }else {
+                    correctOtherItems.add(item);
+                }
+            }
+
+            if(smoothies.size() != correctSmoothies.size()){
+                if(smoothies.size() > correctSmoothies.size()){
+                    throw new GameInformationError("You have one too many smoothies.");
+                }else {
+                    throw new GameInformationError("You are missing at least one smoothie on the order");
+                }
+            }
+
+            if(otherItems.size() != correctOtherItems.size()){
+                if(otherItems.size() > correctOtherItems.size()){
+                    throw new GameInformationError("You have one too many items.");
+                }else {
+                    throw new GameInformationError("You are missing at least one item on the order");
+                }
+            }
+
+            // Check to see if all the smoothies are correct.
+            for (int i = 0; i < smoothies.size(); i++) {
+                Smoothie userSmoothie = smoothies.get(i);
+                Smoothie targetSmoothie = correctSmoothies.get(i);
+
+                try {
+                    if(!userSmoothie.equals(targetSmoothie)){
+                        throw new GameInformationError("One of the smoothie's is incorrect: either it is missing ingredients or " +
+                                "name doesn't match the order.");
+                    }
+                } catch (NullPointerException e) {
+                    throw new GameInformationError("Internal error.");
+                }
+            }
+
+            // Check to see if all the item's are correct.
+            for (int i = 0; i < correctOtherItems.size(); i++) {
+                Item userItem = otherItems.get(i);
+                Item targetItem = correctOtherItems.get(i);
+
+                if(!userItem.equals(targetItem)){
+                    throw new GameInformationError("One of the item's is incorrect either it is missing ingredients or " +
+                            "doesn't match the order");
+                }
+            }
+
+            throw new GameInformationError("Something internal is happening.");
         }
     }
 
@@ -173,10 +273,17 @@ public class GameLogicManager {
         return correctItemsCart;
     }
 
+    /**
+     * Regenerates the instructions for the correct items. Basically
+     * what items the user is going for.
+     */
     public String generateDirections(){
         return generateDirections(correctItemsCart);
     }
 
+    /**
+     * Given a cart generate directions for it.
+     */
     public String generateDirections(Cart cart){
         StringBuilder sb = new StringBuilder();
 
@@ -267,7 +374,12 @@ public class GameLogicManager {
                 if(counter == totalItemsInCart.size() - 1 && totalItemsInCart.size() > 1){
                         String replace = entry.getKey().replaceAll(",\\s*", "");
                         sb.append("and ");
-                        sb.append(String.format("%s ", textRepresentation)).append(replace);
+//                        sb.append(String.format("%s ", textRepresentation)).append(replace);
+                        if(entry.getValue() > 1){
+                            sb.append(String.format("%s %s's", textRepresentation, entry.getKey()));
+                        }else{
+                            sb.append(String.format("%s %s", textRepresentation, entry.getKey()));
+                        }
                 }else{
                     if(totalItemsInCart.size() == 1){
                         if(entry.getValue() > 1){
@@ -433,6 +545,9 @@ public class GameLogicManager {
         return sb.toString();
     }
 
+    /**
+     * Responsible for converting a number into a text format.
+     */
     public static String convertToString(int number) {
         switch (number) {
             case 1:
