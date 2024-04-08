@@ -270,6 +270,9 @@ public class App {
         });
     }
 
+    /**
+     * Responsible for submitting the current order to be processed.
+     */
     private void submitOrder() {
         // Functionality for Submitting Instructions/Order
         menuGame.getSubmitButton().addActionListener(new ActionListener() {
@@ -277,6 +280,11 @@ public class App {
             public void actionPerformed(ActionEvent e) {
                 System.out.println(cart);
                 System.out.println(cart.getTotal());
+
+                // Reset the cart
+                cart.resetCart();
+                updateReceiptText();
+                deleteItemsPage.setTextForLabel();
             }
         });
     }

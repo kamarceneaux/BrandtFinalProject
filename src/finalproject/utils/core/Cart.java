@@ -58,8 +58,9 @@ public class Cart {
     /**
      * Clears a cart
      */
-    public void clearCart(){
+    public void resetCart(){
         items.clear();
+        total = getTotal();
     }
 
     @Override
