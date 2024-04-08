@@ -18,8 +18,12 @@ public class GameLogicManager {
     private ItemManager itemManager = new ItemManager();
     private Map<String, Integer> correctData;
     private Cart correctItemsCart = new Cart();
+    private int desiredTime;
     private String instructions;
 
+    /**
+     * Must be called to generate the game logic.
+     */
     public void startLogic(){
         scenario = 0;
 
@@ -29,6 +33,7 @@ public class GameLogicManager {
             // Generate the correctItem Cart
             buildCart();
             instructions = generateDirections();
+            desiredTime = generateTimeForScenarioZero();
         } else {
 
         }
@@ -39,8 +44,8 @@ public class GameLogicManager {
      * @param userCart
      * @throws GameInformationError
      */
-    public boolean checkScenarioOne(Cart userCart) throws GameInformationError {
-        return checkScenarioOne(userCart, correctItemsCart);
+    public boolean checkScenarioZero(Cart userCart) throws GameInformationError {
+        return checkScenarioZero(userCart, correctItemsCart);
     }
 
     /**
@@ -51,7 +56,7 @@ public class GameLogicManager {
      * @return a boolean whether if the carts were equal or not.
      * @throws GameInformationError
      */
-    public boolean checkScenarioOne(Cart userCart, Cart correctItems) throws GameInformationError {
+    public boolean checkScenarioZero(Cart userCart, Cart correctItems) throws GameInformationError {
         Comparator<Item> cartCompator = new Comparator<>() {
             @Override
             public int compare(Item o1, Item o2) {
@@ -545,6 +550,27 @@ public class GameLogicManager {
         return sb.toString();
     }
 
+    private int generateTimeForScenarioZero(){
+        int totalTime = 10;
+
+        for (Item item: getCorrectItemsCart().getItems()){
+            if(item instanceof Smoothie){
+                Smoothie smoothie = (Smoothie) item;
+                List<Ingredient> ingredients = smoothie.getModifiedIngredients();
+                if(ingredients.size() > 9){
+                    totalTime +=  Math.round(ingredients.size() * 2.15);
+                } else if (ingredients.size() > 4) {
+                    totalTime +=  Math.round(ingredients.size() * 1.75);
+                } else{
+                    totalTime += ingredients.size();
+                }
+            }else{
+                totalTime += 3;
+            }
+        }
+        return totalTime;
+    }
+
     /**
      * Responsible for converting a number into a text format.
      */
@@ -581,5 +607,9 @@ public class GameLogicManager {
 
     public int getScenario() {
         return scenario;
+    }
+
+    public int getDesiredTime() {
+        return desiredTime;
     }
 }

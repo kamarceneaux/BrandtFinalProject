@@ -6,6 +6,7 @@ import finalproject.utils.core.GameInformationError;
 import finalproject.utils.core.Item;
 import finalproject.utils.core.Smoothie;
 import finalproject.utils.core.logic.GameLogicManager;
+import finalproject.utils.core.logic.Stopwatch;
 import finalproject.utils.core.managers.ItemManager;
 import finalproject.utils.core.managers.SmoothieManager;
 import finalproject.utils.screens.*;
@@ -42,6 +43,7 @@ public class App {
     private DeleteItemsPage deleteItemsPage = new DeleteItemsPage(cart);
     private ItemManager itemManager = new ItemManager();
     private GameLogicManager gameLogicManager = new GameLogicManager();
+    private Stopwatch stopwatch = new Stopwatch();
 
     public void run()  {
         final Container content = bf.getContentPane();
@@ -73,6 +75,9 @@ public class App {
                 cards.show(content, "menuGame");
                 menuGame.requestFocus();
                 menuGame.setInstructionsText(gameLogicManager.getInstructions());
+
+                // Start the stopwatch
+                stopwatch.start();
             }
         });
 
@@ -288,18 +293,29 @@ public class App {
                 // Check Game Logic
                 String exception = "The customer successfully recieved their order! They are very happy :)";
 
-                try {
-                    // Check Game Logic
-                    gameLogicManager.checkScenarioOne(cart);
-                } catch (GameInformationError ex) {
-                   exception = ex.getMessage();
-                } finally {
-                    System.out.println(exception);
+                if(gameLogicManager.getScenario() == 0){
+                    try {
+                        // Check Game Logic
+                        gameLogicManager.checkScenarioZero(cart);
+                    } catch (GameInformationError ex) {
+                        exception = ex.getMessage();
+                    } finally {
+                        System.out.println(exception);
 
-                    // Reset the cart
-                    cart.resetCart();
-                    updateReceiptText();
-                    deleteItemsPage.setTextForLabel();
+                    }
+
+                    if(exception.equalsIgnoreCase("The customer successfully recieved their order! They are very happy :)")){
+                        // Reset Cart
+                        cart.resetCart();
+                        updateReceiptText();
+                        deleteItemsPage.setTextForLabel();
+
+                        stopwatch.stop();
+                        int timeTaken = stopwatch.elapsedTimeInSeconds();
+                        System.out.println(timeTaken);
+
+                        stopwatch.reset();
+                    }
                 }
             }
         });
