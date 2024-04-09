@@ -44,10 +44,13 @@ public class App {
     private ItemManager itemManager = new ItemManager();
     private GameLogicManager gameLogicManager = new GameLogicManager();
     private Stopwatch stopwatch = new Stopwatch();
+    private EndGameScreen summaryPage = new EndGameScreen(0, 0, "...");
+    private CardLayout cards;
+    private Container content;
 
     public void run()  {
-        final Container content = bf.getContentPane();
-        final CardLayout cards = new CardLayout();
+        content = bf.getContentPane();
+        cards = new CardLayout();
         content.setLayout(cards);
 
         // Make Different Page Screens
@@ -291,7 +294,7 @@ public class App {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Check Game Logic
-                String exception = "The customer successfully recieved their order! They are very happy :)";
+                String exception = "The customer successfully received their order! They are very happy :)";
 
                 if(gameLogicManager.getScenario() == 0){
                     try {
@@ -302,10 +305,7 @@ public class App {
                     } finally {
                         System.out.println(exception);
 
-                    }
-
-                    if(exception.equalsIgnoreCase("The customer successfully recieved their order! They are very happy :)")){
-                        // Reset Cart
+                        // House cleaning and restart the game
                         cart.resetCart();
                         updateReceiptText();
                         deleteItemsPage.setTextForLabel();
@@ -314,7 +314,16 @@ public class App {
                         int timeTaken = stopwatch.elapsedTimeInSeconds();
                         System.out.println(timeTaken);
 
+                        // Show the new page
+                        summaryPage = new EndGameScreen(timeTaken, gameLogicManager.getDesiredTime(), exception);
+                        content.add(summaryPage, "summaryPage");
+                        cards.show(content, "summaryPage");
+                        summaryPage.requestFocus();
+
                         stopwatch.reset();
+
+                        // Restart Button
+                        restartGame();
                     }
                 }
             }
@@ -358,6 +367,30 @@ public class App {
                 }
             });
         }
+    }
+
+    /**
+     * Responsible for restarting the game.
+     */
+    private void restartGame(){
+        summaryPage.getRestartGame().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Generates new logic for the next game
+                gameLogicManager.getCorrectItemsCart().resetCart();
+                gameLogicManager.startLogic();
+
+                // Return back to the menuPage
+                cards.show(content, "menuGame");
+                menuGame.requestFocus();
+
+                // Reshow instructions
+                menuGame.setInstructionsText(gameLogicManager.getInstructions());
+
+                // Start the stopwatch
+                stopwatch.start();
+            }
+        });
     }
 
     public static void main(String[] args) {

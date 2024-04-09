@@ -7,7 +7,7 @@ import finalproject.utils.core.managers.SmoothieManager;
 import java.util.*;
 
 public class GameLogicManager {
-    private static final Random random = new Random();
+    private static Random random = new Random();
     /*
     Scenario = 0 --> follow exact order
     Scenario = 1 --> make a order under a budget
@@ -27,16 +27,12 @@ public class GameLogicManager {
     public void startLogic(){
         scenario = 0;
 
-        // Follow Exact Order Sequence scenario
-        if(scenario == 0){
-            correctData = generateAmountOfItems();
-            // Generate the correctItem Cart
-            buildCart();
-            instructions = generateDirections();
-            desiredTime = generateTimeForScenarioZero();
-        } else {
-
-        }
+        random = new Random();
+        correctData = generateAmountOfItems();
+        // Generate the correctItem Cart
+        buildCart();
+        instructions = generateDirections();
+        desiredTime = generateTimeForScenarioZero();
     }
 
     /**
