@@ -9,23 +9,14 @@ import java.awt.*;
 import java.util.Random;
 
 public class EndGameScreen extends BasicContainer {
-    private int timeConsumed;
-    private int maxTimeAllowed;
     private String message;
-    private boolean success;
     private JButton restartGame = new JButton("Restart Game");
     private SpriteComponent sc;
     private Random rand = new Random();
     private JTextArea textArea = new JTextArea();
     private JScrollPane scrollPaneText = new JScrollPane(textArea);
 
-    private static String[][] successLayout = {
-            {"message", "message", "restartGame"},
-            {"content", "content", "content"},
-            {"content", "content", "content"}
-    };
-
-    private static String[][] failLayout = {
+    private static String[][] layout = {
             {"message", "message", "restartGame"},
             {"content", "content", "content"},
             {"content", "content", "content"}
@@ -33,8 +24,6 @@ public class EndGameScreen extends BasicContainer {
 
     public EndGameScreen(int timeConsumed, int maxTimeAllowed, String message) {
         super();
-        this.timeConsumed = timeConsumed;
-        this.maxTimeAllowed = maxTimeAllowed;
         this.message = message;
         String successGame = "The customer successfully received their order! They are very happy :)";
 
@@ -43,9 +32,10 @@ public class EndGameScreen extends BasicContainer {
             this.message = "Customer felt like you took too long placing their order. Remember our business relies on speed!!";
         }
 
+        setStringLayout(layout);
+
         // Content Screen
         if(this.message.equalsIgnoreCase(successGame)){
-            setStringLayout(successLayout);
             sc = new SpriteComponent(){
                 @Override
                 public void paintBackground(Graphics g) {
@@ -56,7 +46,6 @@ public class EndGameScreen extends BasicContainer {
             };
             sc.setSize(new Dimension(500, 400));
         }else{
-            setStringLayout(failLayout);
             sc = new SpriteComponent(){
                 @Override
                 public void paintBackground(Graphics g) {
