@@ -11,11 +11,8 @@ import finalproject.utils.core.managers.ItemManager;
 import finalproject.utils.core.managers.SmoothieManager;
 import finalproject.utils.screens.*;
 
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
-import java.awt.CardLayout;
-import java.awt.Color;
-import java.awt.Container;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -27,7 +24,7 @@ import java.awt.event.ActionListener;
  * @author Kameron Arceneaux
  */
 public class App {
-    BasicFrame bf = new BasicFrame("Smooth Smoothie Spot -- Kiosk"){
+    BasicFrame bf = new BasicFrame("Smooth Smoothie Spot -- Kiosk") {
         @Override
         public void show() {
             super.show();
@@ -48,7 +45,7 @@ public class App {
     private CardLayout cards;
     private Container content;
 
-    public void run()  {
+    public void run() {
         content = bf.getContentPane();
         cards = new CardLayout();
         content.setLayout(cards);
@@ -57,12 +54,12 @@ public class App {
         StartPage startPage = new StartPage();
         content.add(startPage, "StartPage");
 
-        content.add(menuGame,"menuGame");
+        content.add(menuGame, "menuGame");
         content.add(viewReceipt, "viewReceipt");
         content.add(deleteItemsPage, "deleteItems");
 
         SmoothieCustomizationPage customizationPage = new SmoothieCustomizationPage();
-        content.add(customizationPage,"customizationPage");
+        content.add(customizationPage, "customizationPage");
 
         BarPage barPage = new BarPage();
         content.add(barPage, "barPage");
@@ -153,19 +150,19 @@ public class App {
         viewReceipt.getGoBackBTN().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cards.show(content,"menuGame");
+                cards.show(content, "menuGame");
                 menuGame.requestFocus();
             }
         });
 
         // Responsible for generating the Customization Page for Smoothies
-        for (JButton button: menuGame.getButtonsForSmoothies()){
+        for (JButton button : menuGame.getButtonsForSmoothies()) {
             showSpecificSmoothieCustomizationPage(button, customizationPage, cards, content);
         }
 
 
         // Modifies a Smoothie Ingredient
-        for(JButton button: customizationPage.getAllCustomizationButtons()){
+        for (JButton button : customizationPage.getAllCustomizationButtons()) {
             button.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -240,11 +237,11 @@ public class App {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Call the submit function on the customization page which is responsible for ensuring ingredients are right
-                if(customizationPage.processSubmission()){
+                if (customizationPage.processSubmission()) {
                     customizationPage.getWorkingSmoothie().compareIngredients();
 
                     // Add items to the cart
-                    if(customizationPage.getWorkingSmoothie().getIngredients() != null){
+                    if (customizationPage.getWorkingSmoothie().getIngredients() != null) {
                         cart.addItem(customizationPage.getWorkingSmoothie());
                     }
 
@@ -296,37 +293,37 @@ public class App {
                 // Check Game Logic
                 String exception = "The customer successfully received their order! They are very happy :)";
 
-                if(gameLogicManager.getScenario() == 0){
-                    try {
-                        // Check Game Logic
-                        gameLogicManager.checkScenarioZero(cart);
-                    } catch (GameInformationError ex) {
-                        exception = ex.getMessage();
-                    } finally {
-                        System.out.println(exception);
 
-                        // House cleaning and restart the game
-                        cart.resetCart();
-                        updateReceiptText();
-                        deleteItemsPage.setTextForLabel();
+                try {
+                    // Check Game Logic
+                    gameLogicManager.checkScenarioZero(cart);
+                } catch (GameInformationError ex) {
+                    exception = ex.getMessage();
+                } finally {
+                    System.out.println(exception);
 
-                        stopwatch.stop();
-                        int timeTaken = stopwatch.elapsedTimeInSeconds();
-                        System.out.println(timeTaken);
+                    // House cleaning and restart the game
+                    cart.resetCart();
+                    updateReceiptText();
+                    deleteItemsPage.setTextForLabel();
 
-                        // Show the new page
-                        summaryPage = new EndGameScreen(timeTaken, gameLogicManager.getDesiredTime(), exception);
-                        content.add(summaryPage, "summaryPage");
-                        cards.show(content, "summaryPage");
-                        summaryPage.requestFocus();
+                    stopwatch.stop();
+                    int timeTaken = stopwatch.elapsedTimeInSeconds();
+                    System.out.println(timeTaken);
 
-                        stopwatch.reset();
+                    // Show the new page
+                    summaryPage = new EndGameScreen(timeTaken, gameLogicManager.getDesiredTime(), exception);
+                    content.add(summaryPage, "summaryPage");
+                    cards.show(content, "summaryPage");
+                    summaryPage.requestFocus();
 
-                        // Restart Button
-                        restartGame();
-                    }
+                    stopwatch.reset();
+
+                    // Restart Button
+                    restartGame();
                 }
             }
+
         });
     }
 
@@ -335,7 +332,7 @@ public class App {
      */
     private void actionsWithProteinBarBtns(BarPage barPage, Cart cart, DeleteItemsPage dp) {
         // Responsible for the actions whenever you add a protein bar
-        for(JButton button: barPage.getAllOptionsForBtns()){
+        for (JButton button : barPage.getAllOptionsForBtns()) {
             button.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -353,8 +350,8 @@ public class App {
     /**
      * Actions for dealing adding cookies
      */
-    private void actionsWithCookieBtns(CookiePage cookiePage, Cart cart, DeleteItemsPage dp){
-        for (JButton btn: cookiePage.getAllOptionsForBtns()){
+    private void actionsWithCookieBtns(CookiePage cookiePage, Cart cart, DeleteItemsPage dp) {
+        for (JButton btn : cookiePage.getAllOptionsForBtns()) {
             btn.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -372,7 +369,7 @@ public class App {
     /**
      * Responsible for restarting the game.
      */
-    private void restartGame(){
+    private void restartGame() {
         summaryPage.getRestartGame().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

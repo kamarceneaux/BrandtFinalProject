@@ -8,11 +8,6 @@ import java.util.*;
 
 public class GameLogicManager {
     private static Random random = new Random();
-    /*
-    Scenario = 0 --> follow exact order
-    Scenario = 1 --> make a order under a budget
-     */
-    private int scenario = random.nextInt(2);
     private int totalItems;
     private SmoothieManager smoothieManager = new SmoothieManager();
     private ItemManager itemManager = new ItemManager();
@@ -25,14 +20,12 @@ public class GameLogicManager {
      * Must be called to generate the game logic.
      */
     public void startLogic(){
-        scenario = 0;
-
         random = new Random();
         correctData = generateAmountOfItems();
         // Generate the correctItem Cart
         buildCart();
         instructions = generateDirections();
-        desiredTime = generateTimeForScenarioZero();
+        desiredTime = generateDesireTime();
     }
 
     /**
@@ -293,56 +286,55 @@ public class GameLogicManager {
         String startGreeting = greetingChoices[random.nextInt(greetingChoices.length)];
         sb.append(startGreeting);
 
-        scenario = 0;
         int counter = 0;
         // If in scenario zero --> which is follow instructions.
-        if(scenario == 0){
-            List<Item> items = cart.getItems();
 
-            // Responsible for tracking the countOfItems
-            HashMap<String, Integer> snackMap = new HashMap<>();
-            int mochaCount = 0, pbCount = 0, banaCount = 0, chocCount = 0, sugCount = 0;
-            snackMap.put("Mocha Madness Muscle Mender", mochaCount);
-            snackMap.put("Peanut Butter Powerhouse", pbCount);
-            snackMap.put("Banana Bread Buff Bar", banaCount);
-            snackMap.put("Chocolate Chip Cookie", chocCount);
-            snackMap.put("Sugar Cookie", sugCount);
+        List<Item> items = cart.getItems();
 
-            for(Item item: items){
-                if(item.getType().equals(TypeOfItem.SMOOTHIE)){
-                    Smoothie smoothie = (Smoothie) item;
+        // Responsible for tracking the countOfItems
+        HashMap<String, Integer> snackMap = new HashMap<>();
+        int mochaCount = 0, pbCount = 0, banaCount = 0, chocCount = 0, sugCount = 0;
+        snackMap.put("Mocha Madness Muscle Mender", mochaCount);
+        snackMap.put("Peanut Butter Powerhouse", pbCount);
+        snackMap.put("Banana Bread Buff Bar", banaCount);
+        snackMap.put("Chocolate Chip Cookie", chocCount);
+        snackMap.put("Sugar Cookie", sugCount);
 
-                    if(item.getName().equalsIgnoreCase("build your own smoothie")){
-                        // logic
-                        String instruction_text = buildYourOwnInstructions(smoothie, counter);
-                        sb.append(instruction_text);
-                        counter++;
-                    }else{
-                        // This means it's not a build your own smoothie
-                        String instruction_text = smoothieInstructions(smoothie, counter);
-                        sb.append(instruction_text);
-                        counter++;
-                    }
-                }
-                if(item.getType().equals(TypeOfItem.SNACK)){
-                    if(item.getName().equalsIgnoreCase("mocha madness muscle mender")){
-                        snackMap.put("Mocha Madness Muscle Mender", ++mochaCount);
-                    } else if (item.getName().equalsIgnoreCase("Peanut Butter Powerhouse")) {
-                        snackMap.put("Peanut Butter Powerhouse", ++pbCount);
-                    } else if (item.getName().equalsIgnoreCase("Banana Bread Buff Bar")) {
-                        snackMap.put("Banana Bread Buff Bar", ++banaCount);
-                    } else if (item.getName().equalsIgnoreCase("Chocolate Chip Cookie")) {
-                        snackMap.put("Chocolate Chip Cookie", ++chocCount);
-                    } else if (item.getName().equalsIgnoreCase("Sugar Cookie")) {
-                        snackMap.put("Sugar Cookie", ++sugCount);
-                    }
+        for(Item item: items){
+            if(item.getType().equals(TypeOfItem.SMOOTHIE)){
+                Smoothie smoothie = (Smoothie) item;
+
+                if(item.getName().equalsIgnoreCase("build your own smoothie")){
+                    // logic
+                    String instruction_text = buildYourOwnInstructions(smoothie, counter);
+                    sb.append(instruction_text);
+                    counter++;
+                }else{
+                    // This means it's not a build your own smoothie
+                    String instruction_text = smoothieInstructions(smoothie, counter);
+                    sb.append(instruction_text);
+                    counter++;
                 }
             }
-
-            // Generate Text for items to add
-            String itemsText = generateItemsText(snackMap);
-            sb.append(itemsText);
+            if(item.getType().equals(TypeOfItem.SNACK)){
+                if(item.getName().equalsIgnoreCase("mocha madness muscle mender")){
+                    snackMap.put("Mocha Madness Muscle Mender", ++mochaCount);
+                } else if (item.getName().equalsIgnoreCase("Peanut Butter Powerhouse")) {
+                    snackMap.put("Peanut Butter Powerhouse", ++pbCount);
+                } else if (item.getName().equalsIgnoreCase("Banana Bread Buff Bar")) {
+                    snackMap.put("Banana Bread Buff Bar", ++banaCount);
+                } else if (item.getName().equalsIgnoreCase("Chocolate Chip Cookie")) {
+                    snackMap.put("Chocolate Chip Cookie", ++chocCount);
+                } else if (item.getName().equalsIgnoreCase("Sugar Cookie")) {
+                    snackMap.put("Sugar Cookie", ++sugCount);
+                }
+            }
         }
+
+        // Generate Text for items to add
+        String itemsText = generateItemsText(snackMap);
+        sb.append(itemsText);
+
         return sb.toString();
     }
 
@@ -546,7 +538,7 @@ public class GameLogicManager {
         return sb.toString();
     }
 
-    private int generateTimeForScenarioZero(){
+    private int generateDesireTime(){
         int totalTime = 10;
 
         for (Item item: getCorrectItemsCart().getItems()){
@@ -599,10 +591,6 @@ public class GameLogicManager {
 
     public String getInstructions() {
         return instructions;
-    }
-
-    public int getScenario() {
-        return scenario;
     }
 
     public int getDesiredTime() {

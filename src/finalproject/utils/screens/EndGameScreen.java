@@ -2,7 +2,11 @@ package finalproject.utils.screens;
 
 import basicgraphics.BasicContainer;
 import basicgraphics.ClockWorker;
+import basicgraphics.Sprite;
 import basicgraphics.SpriteComponent;
+import finalproject.utils.sprites.AngryCustomer;
+import finalproject.utils.sprites.Building;
+import finalproject.utils.sprites.HappyCustomer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -42,9 +46,15 @@ public class EndGameScreen extends BasicContainer {
                     Dimension d = getSize();
                     g.setColor(new Color(9, 214, 255));
                     g.fillRect(0, 0, d.width, d.height);
+
+                    g.setColor(Color.ORANGE);
+                    g.fillOval(d.width - 150, 35, 85, 85);
                 }
             };
-            sc.setSize(new Dimension(500, 400));
+
+            final Sprite building = new Building(sc);
+            final Sprite happyCustomer = new HappyCustomer(sc);
+
         }else{
             sc = new SpriteComponent(){
                 @Override
@@ -53,24 +63,27 @@ public class EndGameScreen extends BasicContainer {
                     g.setColor(new Color(65, 72, 73));
                     g.fillRect(0, 0, d.width, d.height);
 
-                    g.setColor(new Color(18, 112, 236));
+                    g.setColor(new Color(111, 125, 141));
                     for (int i = 0; i < 30; i++) {
                         int diameter = 6;
                         int xpos = rand.nextInt(d.width);
                         int ypos = rand.nextInt(d.height);
                         g.fillOval(xpos, ypos, diameter, diameter);
                     }
-
                 }
             };
+
+            final Sprite building = new Building(sc);
+            final Sprite angryCustomer = new AngryCustomer(sc);
         }
 
         sc.setPreferredSize(new Dimension(750, 450));
 
-
         buttons();
         textArea.setText(this.message);
         this.add("content", sc);
+
+        ClockWorker.initialize(40);
         ClockWorker.addTask(sc.moveSprites());
     }
 
@@ -91,5 +104,9 @@ public class EndGameScreen extends BasicContainer {
 
     public JButton getRestartGame() {
         return restartGame;
+    }
+
+    public SpriteComponent getSc() {
+        return sc;
     }
 }
